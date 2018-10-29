@@ -1,0 +1,46 @@
+<table *ngIf="datasource">
+  <p-table [columns]="columns" [value]="datasource">
+    <!--<ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
+      </colgroup>
+    </ng-template>-->
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let colUpper of columnUppers" [attr.colspan]="colUpper.colspan" [ngStyle]="{'width.px':colUpper.width}"
+            [ngClass]="{'PrHeader' : colUpper.type === 1,
+                        'PoHeader' : colUpper.type === 2,
+                        'RcHeader' : colUpper.type === 3}">
+          {{colUpper.header}}
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
+          {{col.header}}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
+          {{rowData[col.field] || '-'}}
+        </td>
+      </tr>
+    </ng-template>
+    <!--<ng-template pTemplate="footer" let-columns>
+      <tr>
+        <td *ngFor="let col of columns">
+          <ng-container *ngIf="col.field !== 'LocationCode';Else TotalBlock">
+            Total
+          </ng-container>
+          <ng-template #TotalBlock>
+            {{datasource}}
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>-->
+  </p-table>
+</table>
+<!--<ng-template #ElseBlock>
+  <span style="text-align:center;">Data not been found.</span>
+</ng-template>-->

@@ -1,0 +1,41 @@
+<div *ngIf="InfoValue; else elseBlock">
+  <form [formGroup]="InfoValueForm">
+    <div class="form-container-column">
+      <mat-accordion class="headers-align">
+        <!--Expansion1-->
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Group for standard-time</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify name and description for group standard-time
+              <mat-icon>clear_all_black</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <!--Row1-->
+          <mat-form-field hintLabel="Name for group standard-time">
+            <input matInput formControlName="Name" required maxlength="50" placeholder="Name">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Name.value?.length || 0}}/50</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Description for group standard-time">
+            <input matInput formControlName="Description" maxlength="200" placeholder="Description">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Description.value?.length || 0}}/200</mat-hint>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button color="primary" (click)="onSubmit()" [disabled]="!InfoValueForm.valid">Save</button>
+            <button mat-button color="warn" (click)="onCancel()">Cancel</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>

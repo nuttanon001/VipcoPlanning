@@ -1,0 +1,14 @@
+@import "../../shared/styles/table.style.scss";
+
+/*.mat-column-NoTaskMachineCode {
+  flex: 0 0 125px;
+}
+.mat-column-AssignedByString, .mat-column-Command {
+  flex: 0 0 150px !important;
+}*/
+
+.mat-table {
+  overflow: auto;
+  height: calc(#{$master-vh} - 320px);
+  width: calc(#{$master-vw} - 150px);
+}

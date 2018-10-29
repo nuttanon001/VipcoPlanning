@@ -1,0 +1,68 @@
+<div class="mat-elevation-z8">
+  <div *ngIf="isLoadingResults" class="loading-shade">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <div class="mx-2">
+    <search-box [isDisabled]="isDisabled" [isOnlyCreate]="isOnlyCreate"></search-box>
+  </div>
+  <mat-table #table [dataSource]="dataSource"
+             matSort matSortActive="Name" matSortDisableClear matSortDirection="desc">
+    <!--- Note that these columns can be defined in any order.
+    The actual rendered columns are set as a property on the row definition" -->
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Code Column -->
+    <ng-container matColumnDef="Name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Name
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.Name }}</mat-cell>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="Description">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Description
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.Description}}</mat-cell>
+    </ng-container>
+    <!-- Command Column -->
+    <ng-container matColumnDef="Command">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-button color="primary" (click)="onActionClick(row,1)" [disabled]="readOnly">
+          <strong>Info/Edit</strong>
+        </button>
+        <button mat-button color="warn" (click)="onActionClick(row,0)" disabled>
+          <strong>Remove</strong>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             [ngClass]="{'mat-row-highlight': selectedRow === row}"
+             (click)="selection.toggle(row)"></mat-row>
+  </mat-table>
+
+  <!--<mat-paginator [length]="resultsLength" [pageSize]="30">
+  </mat-paginator>-->
+
+  <mat-paginator #paginator
+                 [pageSize]="10"
+                 [pageSizeOptions]="[10, 25, 50]"
+                 [length]="resultsLength"
+                 [showFirstLastButtons]="true">
+  </mat-paginator>
+</div>
+

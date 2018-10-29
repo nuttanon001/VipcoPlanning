@@ -1,0 +1,153 @@
+<div *ngIf="InfoValue;else elseBlock">
+  <form [formGroup]="InfoValueForm">
+    <div class="form-container-column">
+      <mat-accordion class="headers-align">
+        <!--Expansion1-->
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Standard-time infomation</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the code, name and group for standard-time
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <!--Row1-->
+          <mat-form-field hintLabel="Specify the standard-time code">
+            <input matInput formControlName="Code"
+                   required maxlength="50"
+                   placeholder="Code for standard-time">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Code.value?.length || 0}}/50</mat-hint>
+            <mat-error *ngIf="InfoValueForm.controls.Code.hasError('required')">
+              Standard-time code is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the standard-time name">
+            <input matInput type="text" formControlName="Name"
+                   required maxlength="200"
+                   placeholder="Name for standard-time">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Name.value?.length || 0}}/200</mat-hint>
+            <mat-error *ngIf="InfoValueForm.controls.Name.hasError('required')">
+              Standard-time name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the standard-time group">
+            <input matInput formControlName="GroupStandardString"
+                   required readonly
+                   placeholder="Group for standard-time"
+                   class="click-input" (click)="openDialog('GroupStandardTime')">
+            <mat-error *ngIf="InfoValueForm.controls.GroupStandardString.hasError('required')">
+              Standard-time group is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the standard-time for workgroup">
+            <input matInput formControlName="ForWorkGroupString"
+                   required readonly
+                   placeholder="Standard-time for work group"
+                   class="click-input" (click)="openDialog('StandardTimeForWorkGroup')">
+            <mat-error *ngIf="InfoValueForm.controls.ForWorkGroupString.hasError('required')">
+              Work group is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion2-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Rate information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the rate and rate-unit for standard-time
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field hintLabel="Specify the standard-time rate">
+            <input matInput type="number" formControlName="Rate"
+                   required min="1"
+                   placeholder="Rate for standard-time">
+            <mat-error *ngIf="InfoValueForm.controls.Rate.hasError('required')">
+              Standard-time rate is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="InfoValueForm.controls.Rate.hasError('min')">
+              Minimum number of standard time rate is <strong>1</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the standard-time unit of rate">
+            <mat-select formControlName="RateUnit" required>
+              <mat-option>-</mat-option>
+              <mat-option [value]="'Kg./MH'">
+                Kilogram per Man-hour(Kg./MH)
+              </mat-option>
+              <mat-option [value]="'M²/MH'">
+                Square meter per Man-hour(M²/MH)
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="InfoValueForm.controls.RateUnit.hasError('required')">
+              Standard-time unit of rate is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">
+              <strong>Previous</strong>
+            </button>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion3-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>More information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the description and remark for standard-time.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+
+          <mat-form-field hintLabel="Specify the standard-time description">
+            <input matInput formControlName="Description"
+                   maxlength="200"
+                   placeholder="Description for standard-time">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Description.value?.length || 0}}/200</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the standard-time remark">
+            <input matInput formControlName="Remark"
+                   maxlength="200"
+                   placeholder="Remark for standard-time">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Remark.value?.length || 0}}/200</mat-hint>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()"><strong>Previous</strong></button>
+            <button mat-button color="primary" (click)="nextStep()"><strong>End</strong></button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>

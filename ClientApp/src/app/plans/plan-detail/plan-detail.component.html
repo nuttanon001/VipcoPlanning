@@ -1,0 +1,277 @@
+<div class="mat-elevation-z8">
+  <div *ngIf="isLoadingResults" class="loading-shade">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <mat-table #table [dataSource]="dataSource"
+             matSort matSortActive="Code" matSortDisableClear matSortDirection="asc">
+    <!--- Note that these columns can be defined in any order.
+    The actual rendered columns are set as a property on the row definition" -->
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Command Column -->
+    <ng-container matColumnDef="Command">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-icon-button color="primary" (click)="onActionClick(row,1)"
+                [disabled]="readOnly" matTooltip="Update">
+          <mat-icon>create</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="onActionClick(row,0)"
+                [disabled]="readOnly" matTooltip="Remove">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Code Column -->
+    <ng-container matColumnDef="Code">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Code
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.Code }}</mat-cell>
+    </ng-container>
+    <!-- Code BomLevel2 -->
+    <ng-container matColumnDef="BomLevel2">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        BomLevel2
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.BomLevel2 }}</mat-cell>
+    </ng-container>
+    <!-- Code Description -->
+    <ng-container matColumnDef="Description">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Description
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.Description }}</mat-cell>
+    </ng-container>
+    <!-- Code ResponsibilityBy -->
+    <ng-container matColumnDef="ResponsibilityBy">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ResponsibilityBy
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.ResponsibilityBy }}</mat-cell>
+    </ng-container>
+    <!-- Code AssignmentToGroup -->
+    <ng-container matColumnDef="AssignmentToGroup">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        AssignmentToGroup
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.AssignmentToGroup }}</mat-cell>
+    </ng-container>
+    <!-- Code ContentWeigth -->
+    <ng-container matColumnDef="ContentWeigth">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ContentWeigth
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.ContentWeigth | number }}</mat-cell>
+    </ng-container>
+    <!-- Code CustomerDrawingDate -->
+    <ng-container matColumnDef="CustomerDrawingDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CustomerDrawingDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.CustomerDrawingDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code ShopDrawingDate -->
+    <ng-container matColumnDef="ShopDrawingDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ShopDrawingDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.ShopDrawingDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code ShopDrawingDate -->
+    <ng-container matColumnDef="ShopDrawingStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        SDStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.ShopDrawingStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code CheckShopDrawingStd -->
+    <ng-container matColumnDef="CheckShopDrawingStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CheckSDtd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.CheckShopDrawingStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code CuttingPlanDate -->
+    <ng-container matColumnDef="CuttingPlanDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CuttingPlanDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.CuttingPlanDate | date:'dd/MM/yy') || "-"}}</mat-cell>
+    </ng-container>
+    <!-- Code CuttingPlanStd -->
+    <ng-container matColumnDef="CuttingPlanStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CPStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.CuttingPlanStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code CheckCuttingPlanStd -->
+    <ng-container matColumnDef="CheckCuttingPlanStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CheckCPStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.CheckCuttingPlanStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code CuttingPlanStd -->
+    <ng-container matColumnDef="PackingFrameStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PFStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.PackingFrameStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code CheckCuttingPlanStd -->
+    <ng-container matColumnDef="CheckPackingFrameStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        CheckPFStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.CheckPackingFrameStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code MaterialDate -->
+    <ng-container matColumnDef="MaterialDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        MaterialDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.MaterialDate | date:'dd/MM/yy') || "-"}}</mat-cell>
+    </ng-container>
+    <!-- Code MachineAndPartDate -->
+    <ng-container matColumnDef="MachineAndPartDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        MachineAndPartDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.MachineAndPartDate | date:'dd/MM/yy') || "-"}}</mat-cell>
+    </ng-container>
+    <!-- Code Description -->
+    <ng-container matColumnDef="FabPlanSDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        FabPlanSDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.FabPlanSDate | date:'dd/MM/yy') || "-"}}</mat-cell>
+    </ng-container>
+    <!-- Code FabPlanEDate -->
+    <ng-container matColumnDef="FabPlanEDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        FabPlanEDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.FabPlanEDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code FabStd -->
+    <ng-container matColumnDef="FabStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        FabStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.FabStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PreAssPlanSDate -->
+    <ng-container matColumnDef="PreAssPlanSDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PreAssPlanSDate
+      </mat-header-cell>
+      <!--<mat-cell *matCellDef="let row">{{(row?.PreAssPlanSDate) || "-" }}</mat-cell>-->
+      <mat-cell *matCellDef="let row">{{(row?.PreAssPlanSDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PreAssPlanEDate -->
+    <ng-container matColumnDef="PreAssPlanEDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PreAssPlanEDate
+      </mat-header-cell>
+      <!--<mat-cell *matCellDef="let row">{{(row?.PreAssPlanEDate) || "-" }}</mat-cell>-->
+      <mat-cell *matCellDef="let row">{{(row?.PreAssPlanEDate| date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PreStd -->
+    <ng-container matColumnDef="PreStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PreStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.PreStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PaintPlanSDate -->
+    <ng-container matColumnDef="PaintPlanSDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PaintPlanSDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.PaintPlanSDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PaintPlanEDate -->
+    <ng-container matColumnDef="PaintPlanEDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PaintPlanEDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.PaintPlanEDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code InsuPlanSDate -->
+    <ng-container matColumnDef="InsuPlanSDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        InsuPlanSDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.InsuPlanSDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PreAssPlanSDate -->
+    <ng-container matColumnDef="InsuPlanEDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        InsuPlanEDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.InsuPlanEDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PackPlanSDate -->
+    <ng-container matColumnDef="PackPlanSDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PackPlanSDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.PackPlanSDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PackPlanEDate -->
+    <ng-container matColumnDef="PackPlanEDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PackPlanEDate
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{(row?.PackPlanEDate | date:'dd/MM/yy') || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PackStd -->
+    <ng-container matColumnDef="PackStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        PackStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.PackStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Code PreStd -->
+    <ng-container matColumnDef="WeldStd">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        WeldStd
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.WeldStd || "-" }}</mat-cell>
+    </ng-container>
+    <!-- Remark Column -->
+    <ng-container matColumnDef="Remark">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Remark
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row?.Remark}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             [ngClass]="{'mat-row-highlight': selectedRow === row}"
+             (click)="selection.toggle(row)"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator
+                 [pageSize]="10"
+                 [pageSizeOptions]="[5, 10, 15]"
+                 [length]="resultsLength"
+                 [showFirstLastButtons]="true">
+  </mat-paginator>
+</div>
+

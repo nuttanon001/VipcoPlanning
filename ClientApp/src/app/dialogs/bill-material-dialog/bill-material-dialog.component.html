@@ -1,0 +1,24 @@
+<div class="master-dialog-vh">
+  <H5 style="color:cadetblue">Specfiy information for bill of material.</H5>
+  <div class="child-container">
+    <div class="center-content" *ngIf="InfoValue.BillofMaterialId !== -99;else ListBom">
+      <app-bill-material-lowlevel-info [InfoValue]="InfoValue" (SubmitOrCancel)="onComplateOrCancelEntity($event)">
+      </app-bill-material-lowlevel-info>
+    </div>
+    <ng-template #ListBom>
+      <app-bill-material-lowlevel-table (returnSelected)="onSelectedValue($event)"></app-bill-material-lowlevel-table>
+    </ng-template>
+    <div class="right-content ml-1">
+      <button mat-mini-fab color="primary" (click)="onSelectedClick()"
+              [disabled]="!getValue"
+              matTooltip="add new data">
+        <mat-icon>add</mat-icon>
+      </button>
+      <hr />
+      <button mat-mini-fab color="warn" (click)="onCancelClick()"
+              matTooltip="close dialog">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

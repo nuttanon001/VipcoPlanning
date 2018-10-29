@@ -1,0 +1,73 @@
+<div *ngIf="InfoValue;else elseBlock">
+  <mat-accordion class="headers-align">
+    <!--Expansion1-->
+    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+      <!--Header-->
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <strong>Specify Project Planning</strong>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-container *ngIf="regConfig">
+        <dynamic-form [fields]="regConfig" (submit)="submitDynamicForm($event)">
+        </dynamic-form>
+      </ng-container>
+
+      <mat-action-row>
+        <button mat-button color="primary" (click)="nextStep()">
+          <strong>Next</strong>
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+      <!--Header-->
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <strong>Load Actual Group Manhour</strong>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngIf="isLoad" class="loading-shade">
+        <mat-spinner *ngIf="isLoad"></mat-spinner>
+      </div>
+      <app-actual-detail-table [dataRows]="InfoValue.ActualDetails" (returnSelectedWith)="OnActualDetail($event)"
+                               [readOnly]="denySave">
+      </app-actual-detail-table>
+
+      <mat-action-row>
+        <button mat-button color="warn" (click)="prevStep()">
+          <strong>Previous</strong>
+        </button>
+        <button mat-button color="primary" (click)="nextStep()">
+          <strong>Next</strong>
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+      <!--Header-->
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <strong>Load Actual Bom Manhour</strong>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngIf="isLoad" class="loading-shade">
+        <mat-spinner *ngIf="isLoad"></mat-spinner>
+      </div>
+      <app-actutal-bom-table [dataRows]="InfoValue.ActualBoms" (returnSelectedWith)="OnActualBom($event)"
+                            [readOnly]="denySave">
+      </app-actutal-bom-table>
+
+      <mat-action-row>
+        <button mat-button color="warn" (click)="prevStep()">
+          <strong>Previous</strong>
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>

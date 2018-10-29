@@ -1,0 +1,354 @@
+<div *ngIf="InfoValue;else elseBlock">
+  <form [formGroup]="InfoValueForm">
+    <div class="form-container-column">
+      <mat-accordion class="headers-align">
+        <!--Expansion1-->
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Plan detail infomation</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the code and name for plan detail
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <!--Row1-->
+          <mat-form-field hintLabel="Specify the plan detail code">
+            <input matInput formControlName="Code"
+                   required maxlength="50"
+                   placeholder="Code for plan detail">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Code.value?.length || 0}}/50</mat-hint>
+            <mat-error *ngIf="InfoValueForm.controls.Code.hasError('required')">
+              Plan detail code is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the plan detail description">
+            <input matInput type="text" formControlName="Description"
+                   maxlength="300"
+                   placeholder="Description for plan detail">
+            <mat-hint [align]="end">{{InfoValueForm.controls.Description.value?.length || 0}}/300</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Specify the plan detail weigth(Ton unit)">
+            <input matInput type="number" formControlName="ContentWeigth"
+                   min="0"
+                   placeholder="Weigth for plan detail">
+            <mat-error *ngIf="InfoValueForm.controls.Code.hasError('min')">
+              Minimum number of weigth is <strong>0</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Select Bill of material">
+            <input matInput formControlName="BomLevel2"
+                   readonly
+                   placeholder="Bill of material" class="click-input" (click)="openDialog('BomLevel2')">
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion2-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Engineer plan information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the plan date and standard time for engineer.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="CustomerDrawingDate"
+                   formControlName="CustomerDrawingDate"
+                   placeholder="CustomerDrawingDate">
+            <mat-datepicker-toggle matSuffix [for]="CustomerDrawingDate"></mat-datepicker-toggle>
+            <mat-datepicker #CustomerDrawingDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="ShopDrawingDate"
+                   formControlName="ShopDrawingDate"
+                   placeholder="ShopDrawingDate">
+            <mat-datepicker-toggle matSuffix [for]="ShopDrawingDate"></mat-datepicker-toggle>
+            <mat-datepicker #ShopDrawingDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="CuttingPlanDate"
+                   formControlName="CuttingPlanDate"
+                   placeholder="CuttingPlanDate">
+            <mat-datepicker-toggle matSuffix [for]="CuttingPlanDate"></mat-datepicker-toggle>
+            <mat-datepicker #CuttingPlanDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="MaterialDate"
+                   formControlName="MaterialDate"
+                   placeholder="MaterialDate">
+            <mat-datepicker-toggle matSuffix [for]="MaterialDate"></mat-datepicker-toggle>
+            <mat-datepicker #MaterialDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="MachineAndPartDate"
+                   formControlName="MachineAndPartDate"
+                   placeholder="MachineAndPartDate">
+            <mat-datepicker-toggle matSuffix [for]="MachineAndPartDate"></mat-datepicker-toggle>
+            <mat-datepicker #MachineAndPartDate></mat-datepicker>
+          </mat-form-field>
+
+          <div formGroupName="EngineerManHour">
+            <mat-form-field>
+              <input matInput formControlName="ShopDrawingString"
+                     readonly
+                     placeholder="Shop drawing standard time" class="click-input"
+                     (click)="openDialog('ShopDrawingId','EngineerManHour','ShopDrawingString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="ShopDrawingCheckString"
+                     readonly
+                     placeholder="Check shop drawing standard time" class="click-input"
+                     (click)="openDialog('ShopDrawingCheckId','EngineerManHour','ShopDrawingCheckString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="CuttingPlanString"
+                     readonly
+                     placeholder="Cutting plan standard time" class="click-input"
+                     (click)="openDialog('CuttingPlanId','EngineerManHour','CuttingPlanString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="CuttingPlanCheckString"
+                     readonly
+                     placeholder="Check cutting plan standard time" class="click-input"
+                     (click)="openDialog('CuttingPlanCheckId','EngineerManHour','CuttingPlanCheckString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="PackingString"
+                     readonly
+                     placeholder="Packing frame standard time" class="click-input"
+                     (click)="openDialog('PackingId','EngineerManHour','PackingString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="PackingCheckString"
+                     readonly
+                     placeholder="Check packing frame standard time" class="click-input"
+                     (click)="openDialog('PackingCheckId','EngineerManHour','PackingCheckString')">
+            </mat-form-field>
+
+          </div>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">
+              <strong>Previous</strong>
+            </button>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion3-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Fabrication plan information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the plan date and standard time for fabrication.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="FabPlanSDate"
+                   formControlName="FabPlanSDate"
+                   placeholder="fab date start">
+            <mat-datepicker-toggle matSuffix [for]="FabPlanSDate"></mat-datepicker-toggle>
+            <mat-datepicker #FabPlanSDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="FabPlanEDate"
+                   formControlName="FabPlanEDate"
+                   placeholder="Fab date ended">
+            <mat-datepicker-toggle matSuffix [for]="FabPlanEDate"></mat-datepicker-toggle>
+            <mat-datepicker #FabPlanEDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PreAssPlanSDate"
+                   formControlName="PreAssPlanSDate"
+                   placeholder="Pre-Assembly date start">
+            <mat-datepicker-toggle matSuffix [for]="PreAssPlanSDate"></mat-datepicker-toggle>
+            <mat-datepicker #PreAssPlanSDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PreAssPlanEDate"
+                   formControlName="PreAssPlanEDate"
+                   placeholder="Pre-Assembly date ended">
+            <mat-datepicker-toggle matSuffix [for]="PreAssPlanEDate"></mat-datepicker-toggle>
+            <mat-datepicker #PreAssPlanEDate></mat-datepicker>
+          </mat-form-field>
+
+          <div formGroupName="FabricationManHour">
+            <mat-form-field>
+              <input matInput formControlName="FabricationString"
+                     readonly
+                     placeholder="Fab standard time" class="click-input"
+                     (click)="openDialog('FabricationId','FabricationManHour','FabricationString')">
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput formControlName="PerAssemblyString"
+                     readonly
+                     placeholder="Pre-Assembly standard time" class="click-input"
+                     (click)="openDialog('PerAssemblyId','FabricationManHour','PerAssemblyString')">
+            </mat-form-field>
+          </div>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">
+              <strong>Previous</strong>
+            </button>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion4-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 3" (opened)="setStep(3)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Paint,Insulation and Packing plan information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the plan date and standard time for paint,insulation and packing.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PaintPlanSDate"
+                   formControlName="PaintPlanSDate"
+                   placeholder="Paint date start">
+            <mat-datepicker-toggle matSuffix [for]="PaintPlanSDate"></mat-datepicker-toggle>
+            <mat-datepicker #PaintPlanSDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PaintPlanEDate"
+                   formControlName="PaintPlanEDate"
+                   placeholder="Paint date ended">
+            <mat-datepicker-toggle matSuffix [for]="PaintPlanEDate"></mat-datepicker-toggle>
+            <mat-datepicker #PaintPlanEDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="InsuPlanSDate"
+                   formControlName="InsuPlanSDate"
+                   placeholder="Insulation date start">
+            <mat-datepicker-toggle matSuffix [for]="InsuPlanSDate"></mat-datepicker-toggle>
+            <mat-datepicker #InsuPlanSDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="InsuPlanEDate"
+                   formControlName="InsuPlanEDate"
+                   placeholder="Insulation date ended">
+            <mat-datepicker-toggle matSuffix [for]="InsuPlanEDate"></mat-datepicker-toggle>
+            <mat-datepicker #InsuPlanEDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PackPlanSDate"
+                   formControlName="PackPlanSDate"
+                   placeholder="Packing date start">
+            <mat-datepicker-toggle matSuffix [for]="PackPlanSDate"></mat-datepicker-toggle>
+            <mat-datepicker #PackPlanSDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="PackPlanEDate"
+                   formControlName="PackPlanEDate"
+                   placeholder="Packing date ended">
+            <mat-datepicker-toggle matSuffix [for]="PackPlanEDate"></mat-datepicker-toggle>
+            <mat-datepicker #PackPlanEDate></mat-datepicker>
+          </mat-form-field>
+
+          <div formGroupName="PackingManHour">
+            <mat-form-field>
+              <input matInput formControlName="PackingString"
+                     readonly
+                     placeholder="Packing standard time" class="click-input"
+                     (click)="openDialog('PackingId','PackingManHour','PackingString')">
+            </mat-form-field>
+          </div>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">
+              <strong>Previous</strong>
+            </button>
+            <button mat-button color="primary" (click)="nextStep()">
+              <strong>Next</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <!--Expansion5-->
+        <mat-expansion-panel class="my-1" [expanded]="step === 4" (opened)="setStep(4)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Weld plan information</strong>
+            </mat-panel-title>
+            <mat-panel-description>
+              Specify the plan date and standard time for weld.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div formGroupName="WeldManHour">
+            <mat-form-field>
+              <input matInput formControlName="WeldString"
+                     readonly
+                     placeholder="Packing standard time" class="click-input"
+                     (click)="openDialog('WeldId','WeldManHour','WeldString')">
+            </mat-form-field>
+          </div>
+
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">
+              <strong>Previous</strong>
+            </button>
+            <button mat-button color="primary" (click)="onSubmit()"
+                    [disabled]="!InfoValueForm.valid">
+              <strong>Save</strong>
+            </button>
+            <button mat-button color="accent" (click)="onCancel()">
+              <strong>Cancel</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>

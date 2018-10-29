@@ -1,0 +1,148 @@
+<div *ngIf="InfoValue;else elseBlock">
+  <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
+    <!--Step1-->
+    <mat-step [stepControl]="InfoValueForm">
+      <ng-template matStepLabel>
+        <strong><b>Master planning information</b></strong>
+      </ng-template>
+      <form [formGroup]="InfoValueForm">
+        <div class="form-container-column">
+          <mat-accordion class="headers-align">
+            <!--Expansion1-->
+            <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+              <!--Header-->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <strong>Info Project</strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                  Specify name of project and revised number
+                  <mat-icon>room</mat-icon>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <!--Row1-->
+              <mat-form-field hintLabel="Select project name">
+                <input matInput formControlName="ProjectName"
+                       required readonly
+                       placeholder="ProjectName" class="click-input" (click)="openDialog('Project')">
+              </mat-form-field>
+              <!--Row2-->
+              <mat-form-field>
+                <input matInput formControlName="Revised"
+                       type="number" min="0"
+                       placeholder="Revised">
+              </mat-form-field>
+              <!--Row3-->
+              <mat-action-row>
+                <button mat-button color="primary" (click)="nextStep()"><strong>Next</strong></button>
+              </mat-action-row>
+            </mat-expansion-panel>
+
+            <!--Expansion2-->
+            <mat-expansion-panel class="my-1" [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+              <!--Header-->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <strong>ManagementBy</strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                  Specify project-engineer employee and status
+                  <mat-icon>account_circle</mat-icon>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <!--Row4-->
+              <mat-form-field hintLabel="Management By">
+                <input matInput formControlName="ManagementByString"
+                       readonly required
+                       placeholder="Project Engineer" class="click-input" (click)="openDialog('Employee')">
+              </mat-form-field>
+              <!--Row5-->
+              <mat-form-field>
+                <input matInput [matDatepicker]="DeliveryDate" formControlName="DeliveryDate"
+                       required
+                       placeholder="DeliveryDate">
+                <mat-datepicker-toggle matSuffix [for]="DeliveryDate"></mat-datepicker-toggle>
+                <mat-datepicker #DeliveryDate></mat-datepicker>
+              </mat-form-field>
+              <!--Row6-->
+              <mat-form-field hintLabel="PlanningStatus">
+                <mat-select formControlName="PlanningStatus"
+                            required
+                            placeholder="Select status">
+                  <mat-option>-</mat-option>
+                  <mat-option [value]="1">InProcess</mat-option>
+                  <mat-option [value]="2">Complate</mat-option>
+                  <mat-option [value]="3">Cancel</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-action-row>
+                <button mat-button color="warn" (click)="prevStep()">
+                  <strong>Previous</strong>
+                </button>
+                <button mat-button matStepperNext color="primary">
+                  <strong>Next</strong>
+                </button>
+              </mat-action-row>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </form>
+    </mat-step>
+    <!--Step2-->
+    <mat-step *ngIf="InfoValue && !InfoValue.PlanMasterId">
+      <ng-template matStepLabel>
+        <strong><b>Import data from excel file.</b></strong>
+      </ng-template>
+      <div class="form-container-column">
+        <div style="display:flex;flex-direction:row;">
+          <button mat-raised-button color="primary" (click)="onOpenDownLoadFormatFile('/files/Template.xlsx')"
+                  matTooltip="Download file import">
+            Template Import
+          </button>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <input type="file" (change)="onFileChange($event)" placeholder="Select excel planing file " readonly>
+        </div>
+        <div *ngIf="planDetailFormFile && planDetailFormFile.length">
+          <app-plan-detail [dataRows]="planDetailFormFile" [readOnly]="true">
+          </app-plan-detail>
+        </div>
+      </div>
+    </mat-step>
+    <!--Step3-->
+    <!--ToDo -->
+    <mat-step *ngIf="InfoValue && InfoValue.PlanMasterId">
+      <ng-template matStepLabel>
+        <strong><b>Modifily planning detail</b></strong>
+      </ng-template>
+      <div class="form-container-column" *ngIf="!infoValueDetail;else InfoValueDetail">
+        <div *ngIf="onLoading" class="loading-shade">
+          <mat-spinner></mat-spinner>
+        </div>
+        <div *ngIf="InfoValue.PlanDetails && InfoValue.PlanDetails.length && !onLoading">
+          <app-plan-detail [dataRows]="InfoValue.PlanDetails" (returnSelected)="OnPlanDetailSelect($event)">
+          </app-plan-detail>
+        </div>
+      </div>
+      <ng-template #InfoValueDetail>
+        <app-plan-detail-info [InfoValue]="infoValueDetail" (SubmitOrCancel)="OnSubmiteOrCancel($event)"></app-plan-detail-info>
+      </ng-template>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>
+
+<!--<input type="file" (change)="onFileChange($event)" />-->
+<!--<table class="table table-striped">
+  <tr *ngFor="let row of data">
+    <td *ngFor="let val of row">
+      {{val}}
+    </td>
+  </tr>
+</table>-->

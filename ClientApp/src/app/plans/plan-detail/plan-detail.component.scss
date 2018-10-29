@@ -1,0 +1,28 @@
+@import "../../shared/styles/table.style.scss";
+@import "../../../sass/styles.scss";
+
+.mat-column-Description {
+  flex: 0 0 350px;
+}
+
+.mat-row, .mat-header-row {
+  width: 275vw; //PERSONALLY I HAD 45 COLUMNS
+}
+
+.mat-header-row { //THIS MAKES THE HEADER STICKY
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 1;
+  background-color: inherit;
+}
+
+.example-table {
+  overflow: auto;
+}
+
+.mat-table {
+  overflow: auto;
+  height: calc(#{$dialog-vh} - 140px);
+  width: 85vw;
+}

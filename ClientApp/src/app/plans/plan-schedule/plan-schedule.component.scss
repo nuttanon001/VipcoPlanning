@@ -1,0 +1,75 @@
+@import "../../shared/styles/schedule.style.scss";
+@import "../../../sass/styles.scss";
+@import "../../shared/styles/table.style.scss";
+
+.material-icons {
+  font-size: 24px;
+  align-items: center;
+  vertical-align: middle;
+  justify-content: space-around;
+}
+
+.is-req-welded {
+  background-color: hotpink;
+  // color: lightgreen !important;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-row, .mat-header-row {
+  width: 150vw; //PERSONALLY I HAD 45 COLUMNS
+}
+
+.mat-header-row { //THIS MAKES THE HEADER STICKY
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 1;
+  background-color: inherit;
+}
+
+
+.mat-column-WorkShopName {
+  flex: 0 0 125px;
+}
+.mat-column-WorkGroup {
+  flex: 0 0 175px;
+}
+.mat-column-Weight {
+  flex: 0 0 100px;
+}
+.mat-column-ManHour {
+  flex: 0 0 150px;
+}
+
+.mat-column-FabKiloPerHour {
+  flex:0 0 150px;
+}
+
+.mat-table {
+  overflow: auto;
+  height: calc(#{$master-vh} - 140px);
+  width: 95vw;
+}
+
+.click-input {
+  cursor: pointer;
+}
+
+mat-form-field {
+  width: 95%;
+  min-height: 50px;
+  margin-left: 2px;
+  margin-right: 2px;
+}

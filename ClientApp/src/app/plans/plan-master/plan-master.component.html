@@ -1,0 +1,49 @@
+<div class="master-container">
+  <div>
+    <!--Title-->
+    <h4 class="card-title text-info">
+      Plans information.
+    </h4>
+  </div>
+  <div *ngIf="onLoading" class="loading-shade">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="child-container">
+    <!--Center-->
+    <div class="center-content">
+      <!--Component-->
+      <div *ngIf="!ShowDetail;else InfoBlock">
+        <app-plan-table (returnSelectedWith)="onDetailView($event)"
+                        (returnSelected)="onSelectedData($event)"></app-plan-table>
+      </div>
+      <ng-template #InfoBlock>
+        <app-plan-info (CancelSave)="CancelSave = $event"></app-plan-info>
+      </ng-template>
+    </div>
+    <!--Right-->
+    <div class="right-content">
+      <button mat-mini-fab color="accent" (click)="onDetailView()"
+              matTooltipPosition="left" matTooltip="Create"
+              [disabled]="ShowDetail">
+        <mat-icon>add</mat-icon>
+      </button>
+      <hr />
+      <button mat-mini-fab color="warn" (click)="onCancelEdit()"
+              matTooltipPosition="left" matTooltip="Cancel"
+              [disabled]="!ShowDetail">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button mat-mini-fab color="accent" (click)="onSubmit()" class="mt-1"
+              matTooltipPosition="left" matTooltip="Save"
+              [disabled]="!canSave || CancelSave">
+        <mat-icon>save</mat-icon>
+      </button>
+      <hr />
+      <button mat-mini-fab color="primary" (click)="onCalculatorPlanMaster()"
+              matTooltipPosition="left" matTooltip="Calculator man hour"
+              [disabled]="!CanCalculator">
+        <mat-icon>format_list_numbered</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

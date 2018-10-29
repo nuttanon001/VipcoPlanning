@@ -1,0 +1,8 @@
+@import "../../shared/styles/info.style.scss";
+
+.table-scroll {
+  display: flex; /* displays flex-items (children) inline */
+  max-width: 90vw;
+  max-height: 350px;
+  overflow-x: auto;
+}

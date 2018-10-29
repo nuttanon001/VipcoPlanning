@@ -1,0 +1,47 @@
+<div class="master-container">
+  <div>
+    <!--Title-->
+    <h4 class="card-title text-info">
+      Bill of material information.
+    </h4>
+  </div>
+  <div *ngIf="onLoading" class="loading-shade">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="child-container">
+    <!--Center-->
+    <div class="center-content">
+      <!--Component-->
+      <div *ngIf="!ShowDetail;else InfoBlock">
+        <app-bill-material-table (returnSelectedWith)="onDetailView($event)"></app-bill-material-table>
+      </div>
+      <ng-template #InfoBlock>
+        <app-bill-material-info></app-bill-material-info>
+      </ng-template>
+    </div>
+    <!--Right-->
+    <div class="right-content">
+      <button mat-mini-fab color="accent" (click)="onDetailView()"
+              matTooltipPosition="left" matTooltip="Create"
+              [disabled]="ShowDetail">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button mat-mini-fab color="accent" (click)="onInsertBomFromSageX3()"
+              matTooltipPosition="left" matTooltip="New bom from sagex3"
+              [disabled]="ShowDetail">
+        <mat-icon>settings_input_component</mat-icon>
+      </button>
+      <hr />
+      <button mat-mini-fab color="warn" (click)="onCancelEdit()"
+              matTooltipPosition="left" matTooltip="Cancel"
+              [disabled]="!ShowDetail">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button mat-mini-fab color="accent" (click)="onSubmit()" class="mt-1"
+              matTooltipPosition="left" matTooltip="Save"
+              [disabled]="!canSave">
+        <mat-icon>save</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

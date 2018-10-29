@@ -1,0 +1,13 @@
+@import "../../shared/styles/info.style.scss";
+
+.form-container-column {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    width: 35vw;
+    min-height: 50px;
+    margin: 5px;
+  }
+}

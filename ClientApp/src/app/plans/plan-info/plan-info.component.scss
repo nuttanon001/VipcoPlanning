@@ -1,0 +1,33 @@
+@import "../../shared/styles/info.style.scss";
+
+.table-scroll {
+  display: flex; /* displays flex-items (children) inline */
+  max-width: 85vw;
+  max-height: 65vh;
+  overflow-x: auto;
+}
+
+.form-container-column {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    width: 35vw;
+    min-height: 50px;
+    margin:5px;
+  }
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

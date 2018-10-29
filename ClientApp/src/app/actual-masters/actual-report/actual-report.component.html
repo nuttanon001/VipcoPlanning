@@ -1,0 +1,30 @@
+<div>
+  <form [formGroup]="reportForm" class="header">
+    <div>
+      <i class="fa fa-object-group" aria-hidden="true"></i>
+      <mat-form-field style="width:350px;">
+        <input matInput formControlName="PlanMasterName"
+               type="text" readonly class="click-input"
+               placeholder="Project-Plan" required
+               (click)="openDialog('PlanMaster')">
+      </mat-form-field>
+    </div>
+    <div>
+      <button mat-mini-fab color="warn" (click)="resetFilter()"
+              matTooltipPosition="left" matTooltip="Reset all filter">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </form>
+  <div *ngIf="isLoading" class="loading-shade">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </div>
+  <div class="detail" *ngIf="!isLoading">
+    <app-actual-report-table [datasource]="datasource"></app-actual-report-table>
+    <hr class="my-5" />
+    <app-actual-chart [newChartLabel]="chartLabel" [newChartData]="chartData"
+                      [titleLabel]="titleLabel"
+                      [xAxesLabel]="xLabel" [yAxesLabel]="yLabel" [yAxes2Label]="yLabel2">
+    </app-actual-chart>
+  </div>
+</div>

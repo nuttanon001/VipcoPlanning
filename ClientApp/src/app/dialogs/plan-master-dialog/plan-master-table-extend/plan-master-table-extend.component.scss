@@ -1,0 +1,8 @@
+@import "../../../shared/styles/table.style.scss";
+@import "../../../../sass/styles.scss";
+
+.mat-table {
+  overflow: auto;
+  height: calc(#{$dialog-vh} - 150px);
+  width: calc(#{$dialog-vw} - 50px);
+}

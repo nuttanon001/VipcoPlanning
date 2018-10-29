@@ -1,0 +1,55 @@
+@import "../../shared/styles/master.style.scss";
+@import "../../shared/styles/info.style.scss";
+
+@mixin block-master {
+  text-align: center;
+  color: darkslateblue !important;
+  font-size: medium !important;
+  border-color: black !important;
+}
+
+/* Structure */
+.master-container {
+  height: $master-vh;
+  width: $master-vw;
+  display: flex;
+  flex-flow: column;
+}
+
+.master-container > div {
+  flex: 1 100%;
+}
+
+.row-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+  text-align: center;
+
+  mat-form-field {
+    width: 200px;
+    min-height: 50px;
+    margin: 5px;
+  }
+}
+
+.detail {
+  max-height: 90%;
+  align-items: flex-start;
+  align-self: flex-start;
+}
+
+$col-height: 20px;
+
+.my-border {
+  border-bottom: solid 1px black !important;
+}
+
+.tab-group {
+  border: 1px solid #e8e8e8;
+}

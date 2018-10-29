@@ -1,0 +1,87 @@
+<div class="master-container">
+  <div *ngIf="onLoading" class="loading-shade">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="child-col-container" style="min-height:80px;">
+    <div class="child-row-container my-1">
+      <h5 class="text-primary">Planning Project Management</h5>
+    </div>
+    <div class="my-1">
+      <form [formGroup]="reportForm" class="form-content m-0">
+        <mat-form-field>
+          <input matInput placeholder="Selecl plan master" class="click-input"
+                 (click)="openDialog('PlanMaster')" readonly
+                 formControlName="PlanMasterName">
+          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        </mat-form-field>
+        <!--<div style="margin:0 0 10px 0;">
+          <button mat-mini-fab color="warn" (click)="resetFilter()" class="mt-1"
+                  matTooltipPosition="left" matTooltip="Reset all filter" style="margin:4px;">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>-->
+      </form>
+    </div>
+  </div>
+  <div class="bottom-container m-1">
+    <mat-table #table [dataSource]="dataSource"
+               matSort matSortActive="WorkShopName" matSortDisableClear matSortDirection="asc">
+      <!--- Note that these columns can be defined in any order.
+  The actual rendered columns are set as a property on the row definition" -->
+      <!-- Column WorkShopName -->
+      <ng-container matColumnDef="WorkShopName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          WorkShopName
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row?.WorkShopName }}</mat-cell>
+      </ng-container>
+      <!-- Column WorkGroup -->
+      <ng-container matColumnDef="WorkGroup">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          WorkGroup
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row?.WorkGroup }}</mat-cell>
+      </ng-container>
+      <!-- Column Weight -->
+      <ng-container matColumnDef="Weight">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Weight(Ton)
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row?.Weight | number : '1.0-2' }}</mat-cell>
+      </ng-container>
+      <!-- Column EngManHour -->
+      <ng-container matColumnDef="ManHour">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Plan-ManHour(Hr.)
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{(row?.EngManHour || 0) + (row?.FabManHour || 0) + (row?.PackManHour || 0) + (row?.WeldManHour || 0) | number : '1.0-0' }}</mat-cell>
+      </ng-container>
+      <!-- Column Weight -->
+      <ng-container matColumnDef="FabKiloPerHour">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          KiloPerHour(Hr.)
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row?.FabKiloPerHour | number : '1.0-1' }}</mat-cell>
+      </ng-container>
+      <!-- Column Item -->
+      <ng-container matColumnDef="Item">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Description
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ (row?.Item.length > 250)? (row?.Item | slice:0:250)+'..':(row?.Item) }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               [ngClass]="{'mat-row-highlight': selectedRow === row}"
+               (click)="selection.toggle(row)"></mat-row>
+    </mat-table>
+
+    <!--<mat-paginator #paginator
+                   [pageSize]="10"
+                   [pageSizeOptions]="[5, 10, 15]"
+                   [length]="resultsLength"
+                   [showFirstLastButtons]="true">
+    </mat-paginator>-->
+  </div>
+</div>
