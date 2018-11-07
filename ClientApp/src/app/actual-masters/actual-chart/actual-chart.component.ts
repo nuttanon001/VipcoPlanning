@@ -117,21 +117,21 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
               if (dataset.data[index]) {
                 // Draw the text in black, with the specified font
                 ctx.fillStyle = 'rgb(0, 0, 0)';
-                let fontSize = 12;
+                let fontSize = 18;
                 let fontStyle = 'normal';
                 // let fontFamily = 'Helvetica Neue';
                 ctx.font = Chart.helpers.fontString(fontSize, fontStyle);
                 // Just naively convert to string for now
-
-                let dataString = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 2 }).format(dataset.data[index]) + ` ${dataset.lable1}`;
+                let dataString = dataset.data[index].toFixed().toString() + ` ${dataset.lable1}`;
                 // let dataString = dataset.data[index].toFixed(1);
                 // Make sure alignment settings are correct
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+
                 let padding = 20;
                 let position = element.tooltipPosition();
-                let y = dataset.type === "line" ? position.y - padding : position.y - 10;
-                let x = dataset.type === "line" ? position.x + (fontSize / 2) + padding : position.x;
+                let y = dataset.type === "line" ? position.y + padding + 10 : position.y - 10;
+                let x = dataset.type === "line" ? position.x : position.x;
                 ctx.fillText(dataString, x , y);
                 //ctx.fillText(dataString, position.x + (fontSize / 2) + padding, position.y);
               }
@@ -150,7 +150,7 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
       },
       options: {
         title: {
-          display: true,
+          display: false,
           text: this.titleLabel
         },
         responsive: false,
@@ -164,7 +164,20 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
           position: "right"
         },
         tooltips: {
-          enabled: true
+          enabled: false
+        },
+        plugins: {
+          datalabels: {
+            backgroundColor: function (context) {
+              return context.dataset.backgroundColor;
+            },
+            borderRadius: 4,
+            color: 'white',
+            font: {
+              weight: 'bold'
+            },
+            formatter: Math.round
+          }
         },
         scales: {
           xAxes: [{
@@ -187,6 +200,7 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
               //}
             },
             {
+              stacked: true,
               type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
               display: true,
               position: 'right',
@@ -200,7 +214,7 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
               },
               ticks: {
                 suggestedMin: 0,
-                suggestedMax: 150
+                suggestedMax: 120
               }
           }]
         },

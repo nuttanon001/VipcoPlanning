@@ -35,6 +35,8 @@ import { StandardTimeForWorkgroupInfoComponent } from './standard-time-for-workg
 import { StandardTimeForWorkgroupTableComponent } from './standard-time-for-workgroup-dialog/standard-time-for-workgroup-table/standard-time-for-workgroup-table.component';
 import { PlanMasterDialogComponent } from './plan-master-dialog/plan-master-dialog.component';
 import { PlanMasterTableExtendComponent } from './plan-master-dialog/plan-master-table-extend/plan-master-table-extend.component';
+import { PlanShipmentDialogComponent } from './plan-shipment-dialog/plan-shipment-dialog.component';
+import { PlanShipmentInfoComponent } from './plan-shipment-dialog/plan-shipment-info/plan-shipment-info.component';
 
 @NgModule({
   imports: [
@@ -72,6 +74,8 @@ import { PlanMasterTableExtendComponent } from './plan-master-dialog/plan-master
     StandardTimeForWorkgroupTableComponent,
     PlanMasterDialogComponent,
     PlanMasterTableExtendComponent,
+    PlanShipmentDialogComponent,
+    PlanShipmentInfoComponent,
   ],
   providers: [
     DialogsService,
@@ -101,6 +105,8 @@ import { PlanMasterTableExtendComponent } from './plan-master-dialog/plan-master
     StandardTimeForWorkgroupTableComponent,
     PlanMasterDialogComponent,
     PlanMasterTableExtendComponent,
+    PlanShipmentDialogComponent,
+    PlanShipmentInfoComponent,
   ],
 })
 export class DialogsModule { }

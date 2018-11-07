@@ -54,7 +54,12 @@ namespace VipcoPlanning.Controllers
         [HttpGet("GetKeyNumber")]
         public override async Task<IActionResult> Get(int key)
         {
-            var HasData = await this.repository.GetAsync(key,true);
+            var HasData = await this.repository.GetFirstOrDefaultAsync(
+                x => x,x => x.PlanDetailId == key,null,
+                x => x.Include(z => z.EngineerManHour)
+                      .Include(z => z.FabricationManHour)
+                      .Include(z => z.PackingManHour)
+                      .Include(z => z.WeldManHour));
             if (HasData == null) return BadRequest(new { Error = "Data not been found." });
 
             var MapData = this.mapper.Map<PlanDetail, PlanDetailViewModel>(HasData);
@@ -79,12 +84,10 @@ namespace VipcoPlanning.Controllers
             {
                 if (key > 0)
                 {
-                    Expression<Func<PlanDetail, bool>> expression = b => b.PlanMasterId == key;
                     var HasData = await this.repository.GetToListAsync(
                         x => x, x => x.PlanMasterId == key,
                         null,x => x.Include(z => z.BillofMaterial)
                                     .Include(z => z.EngineerManHour)
-                                    .Include(z => z.FabricationManHour)
                                     .Include(z => z.FabricationManHour)
                                     .Include(z => z.PackingManHour)
                                     .Include(z => z.WeldManHour));
@@ -175,6 +178,7 @@ namespace VipcoPlanning.Controllers
 
             return new JsonResult(new ScrollDataViewModel<PlanDetailViewModel>(Scroll, mapDatas), this.DefaultJsonSettings);
         }
+
         // PUT: api/PlanDetail/5
         [HttpPut]
         public override async Task<IActionResult> Update(int key, [FromBody] PlanDetail record)
@@ -200,14 +204,14 @@ namespace VipcoPlanning.Controllers
 
                     await this.repositoryEngMH.UpdateAsync(record.EngineerManHour, record.EngineerManHour.EngineerManHourId);
                 }
-                else
-                {
-                    record.EngineerManHour.CreateDate = record.ModifyDate;
-                    record.EngineerManHour.Creator = record.Modifyer;
+                //else
+                //{
+                //    record.EngineerManHour.CreateDate = record.ModifyDate;
+                //    record.EngineerManHour.Creator = record.Modifyer;
 
-                    await this.repositoryEngMH.AddAsync(record.EngineerManHour);
-                    record.EngineerManHourId = record.EngineerManHour.EngineerManHourId;
-                }
+                //    await this.repositoryEngMH.AddAsync(record.EngineerManHour);
+                //    record.EngineerManHourId = record.EngineerManHour.EngineerManHourId;
+                //}
             }
 
             if (record.FabricationManHour != null)
@@ -219,14 +223,14 @@ namespace VipcoPlanning.Controllers
 
                     await this.repositoryFabMH.UpdateAsync(record.FabricationManHour, record.FabricationManHour.FabricationManHourId);
                 }
-                else
-                {
-                    record.FabricationManHour.CreateDate = record.ModifyDate;
-                    record.FabricationManHour.Creator = record.Modifyer;
+                //else
+                //{
+                //    record.FabricationManHour.CreateDate = record.ModifyDate;
+                //    record.FabricationManHour.Creator = record.Modifyer;
 
-                    await this.repositoryFabMH.AddAsync(record.FabricationManHour);
-                    record.FabricationManHourId = record.FabricationManHour.FabricationManHourId;
-                }
+                //    await this.repositoryFabMH.AddAsync(record.FabricationManHour);
+                //    record.FabricationManHourId = record.FabricationManHour.FabricationManHourId;
+                //}
             }
 
             if (record.PackingManHour != null)
@@ -238,14 +242,14 @@ namespace VipcoPlanning.Controllers
 
                     await this.repositoryPakMH.UpdateAsync(record.PackingManHour, record.PackingManHour.PackingManHourId);
                 }
-                else
-                {
-                    record.PackingManHour.CreateDate = record.ModifyDate;
-                    record.PackingManHour.Creator = record.Modifyer;
+                //else
+                //{
+                //    record.PackingManHour.CreateDate = record.ModifyDate;
+                //    record.PackingManHour.Creator = record.Modifyer;
 
-                    await this.repositoryPakMH.AddAsync(record.PackingManHour);
-                    record.PackingManHourId = record.PackingManHour.PackingManHourId;
-                }
+                //    await this.repositoryPakMH.AddAsync(record.PackingManHour);
+                //    record.PackingManHourId = record.PackingManHour.PackingManHourId;
+                //}
             }
 
             if (record.WeldManHour != null)
@@ -257,14 +261,14 @@ namespace VipcoPlanning.Controllers
 
                     await this.repositoryWedMH.UpdateAsync(record.WeldManHour, record.WeldManHour.WeldManHourId);
                 }
-                else
-                {
-                    record.WeldManHour.CreateDate = record.ModifyDate;
-                    record.WeldManHour.Creator = record.Modifyer;
+                //else
+                //{
+                //    record.WeldManHour.CreateDate = record.ModifyDate;
+                //    record.WeldManHour.Creator = record.Modifyer;
 
-                    await this.repositoryWedMH.AddAsync(record.WeldManHour);
-                    record.WeldManHourId = record.WeldManHour.WeldManHourId;
-                }
+                //    await this.repositoryWedMH.AddAsync(record.WeldManHour);
+                //    record.WeldManHourId = record.WeldManHour.WeldManHourId;
+                //}
             }
 
             if (await this.repository.UpdateAsync(record, key) == null)

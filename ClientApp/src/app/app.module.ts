@@ -83,6 +83,11 @@ import { CustomMaterialModule } from "./shared/customer-material.module";
         loadChildren: "./workgroups/workgroup.module#WorkgroupModule",
         canActivate: [AuthGuard]
       },
+      {
+        path: "user",
+        loadChildren: "./users/userid.module#UseridModule",
+        canActivate: [AuthGuard]
+      },
       { path: "**", redirectTo: "home" },
     ]),
   ],

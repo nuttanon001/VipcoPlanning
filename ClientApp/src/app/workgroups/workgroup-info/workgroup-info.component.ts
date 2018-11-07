@@ -41,6 +41,7 @@ export class WorkgroupInfoComponent extends BaseInfoMk2Component<Workgroup, Work
       { name: "PAINT", value: 5 },
       { name: "INSULATION", value: 6 },
       { name: "PACK", value: 7 },
+      { name: "NONE", value: 8 },
     ];
 
     if (InfoValue && InfoValue.WorkGroupNickNameId) {
@@ -56,7 +57,7 @@ export class WorkgroupInfoComponent extends BaseInfoMk2Component<Workgroup, Work
       this.buildForm();
     }
   }
-  // options: ["FABRICATE", "ENGINEERING", "MACHINE", "WELD", "PAINT", "INSULATION", "PACK"],
+  // options: ["FABRICATE", "ENGINEERING", "MACHINE", "WELD", "PAINT", "INSULATION", "PACK","NONE"],
   //
   // Build Form
   buildForm(): void {

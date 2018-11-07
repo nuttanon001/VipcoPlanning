@@ -21,6 +21,8 @@ namespace VipcoPlanning.Models.Planning
         public double? TotalManHourNTOT { get; set; }
         public double? WeightPlan { get; set; }
         public double? TotalPlanManHour { get; set; }
+        public ActualType? ActualType { get; set; }
+        public ActualDetailType? ActualDetailType { get; set; }
         // FK
         // ActualMasterId
         public int? ActualMasterId { get; set; }

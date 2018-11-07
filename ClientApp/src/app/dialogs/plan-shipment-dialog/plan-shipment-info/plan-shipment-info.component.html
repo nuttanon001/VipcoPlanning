@@ -1,0 +1,38 @@
+<div *ngIf="InfoValue;else elseBlock">
+  <form [formGroup]="InfoValueForm">
+    <div class="form-container-column">
+      <mat-accordion class="headers-align">
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+          <!--Header-->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Date Shipment</strong>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!--SplitQuality-->
+          <mat-form-field>
+            <input matInput [matDatepicker]="DateShipment" formControlName="DateShipment"
+                   required
+                   placeholder="DateShipment">
+            <mat-datepicker-toggle matSuffix [for]="DateShipment"></mat-datepicker-toggle>
+            <mat-datepicker #DateShipment></mat-datepicker>
+            <mat-error *ngIf="InfoValueForm.controls.DateShipment.hasError('required')">
+              DateShipment is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <!--Command-->
+          <mat-action-row>
+            <button mat-button color="primary" (click)="endStep()"  [disabled]="!InfoValueForm.valid">
+              <strong>End</strong>
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</div>
+
+<ng-template #elseBlock>
+  <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+  Waiting... for loading
+</ng-template>

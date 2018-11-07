@@ -5,6 +5,7 @@ import { DialogsService } from '../../dialogs/shared/dialogs.service';
 import { ChartOption } from '../shared/chart-option.model';
 import { ChartData, ChartData2 } from '../shared/chart-data.model';
 import { ActualFab } from '../shared/actual-fab.model';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-actual-report',
@@ -16,10 +17,13 @@ export class ActualReportComponent implements OnInit {
     private service: ActualMasterService,
     private serviceDialogs: DialogsService,
     private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
     private viewContainerRef: ViewContainerRef
   ) { }
 
   // model
+  mode: number = 1;
   chartOption: ChartOption;
   isLoading?: boolean;
   // form
@@ -49,6 +53,14 @@ export class ActualReportComponent implements OnInit {
     if (!this.datasource) {
       this.datasource = new Array;
     }
+
+    this.route.paramMap.subscribe((param: ParamMap) => {
+      this.mode = Number(param.get("mode") || 1);
+      // debug here
+      // console.log(this.mode);
+      this.onValueChanged();
+    }, error => console.error(error));
+
     this.buildForm();
   }
 
@@ -89,14 +101,22 @@ export class ActualReportComponent implements OnInit {
 
     this.isLoading = true;
     let option: ChartOption = this.reportForm.value;
-    this.service.getChartResult(option)
+    let subString = "";
+
+    if (this.mode === 1) {
+      subString = "ChartManHour/";
+    } else if (this.mode === 2) {
+      subString = "ChartBomManHour/";
+    }
+
+    this.service.getChartResult(option, subString)
       .subscribe(ChartResult => {
-        if (ChartResult) {
+        if (ChartResult && ChartResult.ProjectName && ChartResult.ActualFabTables) {
           //debug here
           // console.log(JSON.stringify(ChartResult));
 
           this.titleLabel = ChartResult.ProjectName;
-          this.xLabel = "Work Group";
+          this.xLabel = this.mode === 1 ? "Work Group" : "Bom Name"; 
           this.yLabel = "Manhours";
           this.yLabel2 = "Percent";
           this.chartLabel = ChartResult.Labels.slice();
@@ -140,9 +160,14 @@ export class ActualReportComponent implements OnInit {
             }
           });
 
-       
+
+        }
+        else {
+          this.isLoading = false;
+          this.setChartData();
         }
       }, error => {
+        this.isLoading = false;
         this.setChartData();
       },() => this.isLoading = false);
   }

@@ -169,6 +169,7 @@ namespace VipcoPlanning.Controllers
                     if (hasProject != null)
                     {
                         var MapDatas = new List<ActualBom>();
+                        var WorkNicks = await this.repositoryNickName.GetToListAsync(x => x);
                         var hasData = await this.repositoryBomMh.GetToListAsync(
                             x => x,
                             x => x.JobNo.ToLower().Equals(hasProject.ProjectCode.ToLower()));
@@ -181,9 +182,14 @@ namespace VipcoPlanning.Controllers
                             foreach (var item in hasData.OrderBy(z => z.ItemCode))
                             {
                                 var MapData = this.mapper.Map<BomTotalManHourView, ActualBom>(item);
+                                var WorkNick = WorkNicks.FirstOrDefault(x => x.GroupCode == item.GroupCode);
+
                                 // Group
                                 if (!string.IsNullOrEmpty(item.ItemCode))
                                     MapData.BomName = Boms.Any() ? Boms.FirstOrDefault(x => x.Code.ToLower().Equals(item.ItemCode.ToLower())).Name ?? "NONE" : "NONE";
+
+                                MapData.ActualType = WorkNick?.ActualType ?? ActualType.NONE;
+                                MapData.ActualDetailType = ActualDetailType.VIPCO;
                                 MapDatas.Add(MapData);
                             }
                         }
@@ -202,6 +208,19 @@ namespace VipcoPlanning.Controllers
                                 var MapDataSub = this.mapper.Map<BomTotalManHourSubView, ActualBom>(itemSub);
                                 if (!string.IsNullOrEmpty(itemSub.ItemCode))
                                     MapDataSub.BomName = BomSubs.Any() ? BomSubs.FirstOrDefault(x => x.Code.ToLower().Equals(itemSub.ItemCode.ToLower())).Name ?? "NONE" : "NONE";
+
+                                var WorkNickSub = WorkNicks.FirstOrDefault(x => x.GroupCode == itemSub.GroupMIS);
+                                var RefWorkGroup = WorkNickSub != null ? await this.repositoryWorkGroup.GetFirstOrDefaultAsync(x => x,x => x.GroupMis == WorkNickSub.ReferenceGroupCode) : null;
+                                if (RefWorkGroup != null)
+                                {
+                                    MapDataSub.GroupCode = RefWorkGroup?.GroupMis ?? "-";
+                                    MapDataSub.ActualDetailType = ActualDetailType.VIPCO;
+                                }
+                                else
+                                    MapDataSub.ActualDetailType = ActualDetailType.SUBCONTRACTOR;
+
+                                var WorkNickSub2 = WorkNicks.FirstOrDefault(x => x.GroupCode == MapDataSub.GroupCode);
+                                MapDataSub.ActualType = WorkNickSub2?.ActualType ?? ActualType.NONE;
                                 MapDatas.Add(MapDataSub);
                             }
                         }

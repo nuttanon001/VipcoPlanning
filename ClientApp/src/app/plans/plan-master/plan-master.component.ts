@@ -54,10 +54,13 @@ export class PlanMasterComponent extends BaseMasterComponent<PlanMaster,PlanServ
     if (this.infoValue) {
       this.dialogsService.confirm("Question Message", "Do you want calculator ?", this.viewContainerRef)
         .subscribe(result => {
-          this.service.calculatorPlanMaster(this.infoValue)
-            .subscribe(result => {
-              this.dialogsService.context("System Message", "Save complate", this.viewContainerRef).subscribe();
-            });
+          if (result) {
+            this.onLoading = true;
+            this.service.calculatorPlanMaster(this.infoValue)
+              .subscribe(_result1 => {
+                this.dialogsService.context("System Message", "Save complate", this.viewContainerRef).subscribe();
+              }, (e: any) => this.onLoading = false,() => this.onLoading = false);
+          }
         });
     }
   }

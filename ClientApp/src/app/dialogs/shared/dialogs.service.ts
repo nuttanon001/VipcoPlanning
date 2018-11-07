@@ -24,6 +24,8 @@ import { StandardTimeForWorkgroup } from "../../standard-times/shared/standard-t
 import { StandardTimeForWorkgroupDialogComponent } from "../standard-time-for-workgroup-dialog/standard-time-for-workgroup-dialog.component";
 import { PlanMaster } from "../../plans/shared/plan-master.model";
 import { PlanMasterDialogComponent } from "../plan-master-dialog/plan-master-dialog.component";
+import { PlanShipment } from "../../plans/shared/plan-shipment.model";
+import { PlanShipmentDialogComponent } from "../plan-shipment-dialog/plan-shipment-dialog.component";
 
 @Injectable()
 export class DialogsService {
@@ -275,6 +277,26 @@ export class DialogsService {
 
     // open dialog
     dialogRef = this.dialog.open(PlanMasterDialogComponent, config);
+    return dialogRef.afterClosed();
+  }
+
+  /**
+  * @param viewContainerRef JobcardDetailDialogComponent
+  * @param type = mode 0:fastSelected
+  */
+  public dialogInfoPlanShipment(viewContainerRef: ViewContainerRef, jobDetail: PlanShipment = undefined,option:boolean = false): Observable<PlanShipment> {
+    let dialogRef: MatDialogRef<PlanShipmentDialogComponent>;
+    let config: MatDialogConfig = new MatDialogConfig();
+
+    // config
+    config.viewContainerRef = viewContainerRef;
+    config.data = { data: jobDetail, option: option };
+    // config.height = this.height;
+    // config.width= this.width;
+    config.hasBackdrop = true;
+
+    // open dialog
+    dialogRef = this.dialog.open(PlanShipmentDialogComponent, config);
     return dialogRef.afterClosed();
   }
 

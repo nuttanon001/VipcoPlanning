@@ -15,6 +15,10 @@ import * as XLSX from 'xlsx';
 import { DialogsService } from '../../dialogs/shared/dialogs.service';
 import { PlanDetailService } from '../shared/plan-detail.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { PlanShipment } from '../shared/plan-shipment.model';
+import { PlanShipmentService } from '../shared/plan-shipment.service';
+import * as moment from "moment";
+
 
 @Component({
   selector: 'app-plan-info',
@@ -27,6 +31,7 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
     service: PlanService,
     serviceCommuncate: PlanCommuncateService,
     private servicePlanDetail: PlanDetailService,
+    private servicePlanShip:PlanShipmentService,
     private serviceAuth:AuthService,
     private fb: FormBuilder,
     private serviceDialog: DialogsService,
@@ -35,6 +40,7 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
     super(service, serviceCommuncate);
   }
   //Parameter
+  indexItem: number;
   infoValueDetail: PlanDetail;
   planDetailFormFile: Array<PlanDetail>;
   onLoading: boolean = false;
@@ -69,13 +75,41 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
                   }
                   this.onLoading = false;
                 });
+
+              this.servicePlanShip.getByMasterId(this.InfoValue.PlanMasterId)
+                .subscribe(dbPlanShip => {
+                  if (dbPlanShip) {
+                    dbPlanShip.forEach(item => {
+                      let temp: PlanShipment = {
+                        PlanShipmentId: 0
+                      };
+
+                      for (let key in item) {
+                        // console.log(key);
+                        if (key.indexOf("$id") === -1) {
+                          temp[key] = item[key];
+                        } 
+                      }
+                      this.InfoValue.PlanShipments.push(temp);
+                    });
+                    this.InfoValue.PlanShipments = this.InfoValue.PlanShipments.slice();
+
+                    if (this.InfoValueForm) {
+                      this.InfoValueForm.patchValue({
+                        PlanShipments: this.InfoValue.PlanShipments
+                      });
+                    }
+                  }
+                });
             }
           }, error => console.error(error), () => this.buildForm());
       }
     } else {
       this.InfoValue = {
         PlanMasterId: 0,
-        Revised:0
+        Revised: 0,
+        PlanDetails: new Array,
+        PlanShipments: new Array,
       };
       this.buildForm();
     }
@@ -100,19 +134,20 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
       ],
       PlanningStatus: [this.InfoValue.PlanningStatus],
       ProjectCodeMasterId: [this.InfoValue.ProjectCodeMasterId],
+      ManagementName: [this.InfoValue.ManagementName,
+        [
+          Validators.required,
+          Validators.maxLength(500)
+        ]
+      ],
       ManagementBy: [this.InfoValue.ManagementBy],
       PlanDetails: [this.InfoValue.PlanDetails],
+      PlanShipments: [this.InfoValue.PlanShipments],
       //BaseModel
       CreateDate: [this.InfoValue.CreateDate],
       Creator: [this.InfoValue.Creator],
       ModifyDate: [this.InfoValue.ModifyDate],
       Modifyer: [this.InfoValue.Modifyer],
-      //ViewModel
-      ManagementByString: [this.InfoValue.ManagementByString,
-        [
-          Validators.required
-        ]
-      ]
     });
     this.InfoValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
@@ -138,12 +173,17 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
             }
           })
       } else if (mode.indexOf("Employee") !== -1) {
-        this.serviceDialog.dialogSelectEmployee(this.viewContainerRef)
-          .subscribe(employee => {
-            if (this.InfoValueForm && employee) {
+        this.serviceDialog.dialogSelectEmployees(this.viewContainerRef)
+          .subscribe(emp => {
+            if (this.InfoValueForm && emp) {
+              let nameThai: string = "";
+              emp.forEach(item => {
+                nameThai += (nameThai ? "," : "") + item.NameThai
+              });
+            
               this.InfoValueForm.patchValue({
-                ManagementBy: employee.EmpCode,
-                ManagementByString: employee.NameThai
+                ManagementBy: emp[0].EmpCode,
+                ManagementName: nameThai
               });
             }
           });
@@ -221,7 +261,6 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
     };
     reader.readAsBinaryString(target.files[0]);
   }
-
   // Dialog Action
   OnPlanDetailSelect(Item: { data?: PlanDetail, option: number }) :void{
     if (Item) {
@@ -256,6 +295,57 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
                 .subscribe(() => this.OnReloadPlanDetail());
             }
           });
+      }
+    }
+  }
+
+  OnPlanShipment(Item: { data?: PlanShipment, option: number }): void {
+    if (Item) {
+      if (!Item.data) {
+        this.indexItem = -1;
+      } else {
+        this.indexItem = this.InfoValue.PlanShipments.indexOf(Item.data);
+      }
+
+      if (Item.option === 2) {
+        let planShip: PlanShipment;
+        // IF Edit data
+        if (Item.data) {
+          planShip = Object.assign({}, Item.data);
+        } else { // Else New data
+          planShip = {
+            PlanShipmentId: 0,
+          };
+        }
+
+        this.serviceDialog.dialogInfoPlanShipment(this.viewContainerRef, planShip)
+          .subscribe(result => {
+            if (result) {
+              if (this.indexItem > -1) {
+                // remove item
+                this.InfoValue.PlanShipments.splice(this.indexItem, 1);
+              }
+
+              this.InfoValue.PlanShipments.push(Object.assign({}, result));
+              this.InfoValue.PlanShipments = this.InfoValue.PlanShipments.sort((item1, item2) => {
+                let result = moment(item1.DateShipment).isBefore(moment(item2.DateShipment));
+                return result ? -1 : 1;
+              }).slice();
+              // Update to form
+              this.InfoValueForm.patchValue({
+                PlanShipments: this.InfoValue.PlanShipments
+              });
+            }
+          });
+      }
+      else if (Item.option === 0) // Remove
+      {
+        this.InfoValue.PlanShipments.splice(this.indexItem, 1);
+        this.InfoValue.PlanShipments = this.InfoValue.PlanShipments.slice();
+        // Update to form
+        this.InfoValueForm.patchValue({
+          PlanShipments: this.InfoValue.PlanShipments
+        });
       }
     }
   }

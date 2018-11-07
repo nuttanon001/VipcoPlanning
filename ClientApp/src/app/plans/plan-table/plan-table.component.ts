@@ -15,6 +15,6 @@ export class PlanTableComponent extends BaseTableComponent<PlanMaster,PlanServic
     serviceAuth:AuthService,
   ) {
     super(service, serviceAuth);
-    this.displayedColumns = ["select","ProjectName" , "Revised", "DeliveryDate", "ManagementByString"];
+    this.displayedColumns = ["select", "ProjectName", "Revised", "DeliveryDate", "ManagementName"];
   }
 }

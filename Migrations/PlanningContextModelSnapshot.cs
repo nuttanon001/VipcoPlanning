@@ -25,7 +25,11 @@ namespace VipcoPlanning.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ActualDetailType");
+
                     b.Property<int?>("ActualMasterId");
+
+                    b.Property<int?>("ActualType");
 
                     b.Property<string>("BomCode")
                         .HasMaxLength(50);
@@ -507,6 +511,9 @@ namespace VipcoPlanning.Migrations
                     b.Property<string>("ManagementBy")
                         .HasMaxLength(50);
 
+                    b.Property<string>("ManagementName")
+                        .HasMaxLength(500);
+
                     b.Property<DateTime?>("ModifyDate");
 
                     b.Property<string>("Modifyer")
@@ -524,6 +531,35 @@ namespace VipcoPlanning.Migrations
                     b.HasKey("PlanMasterId");
 
                     b.ToTable("PlanMasters");
+                });
+
+            modelBuilder.Entity("VipcoPlanning.Models.Planning.PlanShipment", b =>
+                {
+                    b.Property<int>("PlanShipmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("DateShipment");
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("PlanMasterId");
+
+                    b.Property<int?>("SequenceNo");
+
+                    b.HasKey("PlanShipmentId");
+
+                    b.HasIndex("PlanMasterId");
+
+                    b.ToTable("PlanShipments");
                 });
 
             modelBuilder.Entity("VipcoPlanning.Models.Planning.RateManHour", b =>
@@ -706,26 +742,26 @@ namespace VipcoPlanning.Migrations
                     b.ToTable("WorkGroupHasNickName");
 
                     b.HasData(
-                        new { WorkGroupNickNameId = 1, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 431, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA01", NickName = "S Chumsaeng" },
-                        new { WorkGroupNickNameId = 2, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA02", NickName = "S Malee" },
-                        new { WorkGroupNickNameId = 3, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA03", NickName = "S Kitti" },
-                        new { WorkGroupNickNameId = 4, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA04", NickName = "S Kritsada" },
-                        new { WorkGroupNickNameId = 5, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA05", NickName = "S Montree" },
-                        new { WorkGroupNickNameId = 6, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA06", NickName = "S Boonma" },
-                        new { WorkGroupNickNameId = 7, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA07", NickName = "S Sumruoy" },
-                        new { WorkGroupNickNameId = 8, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA08", NickName = "S Surat" },
-                        new { WorkGroupNickNameId = 9, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA09", NickName = "S Yai" },
-                        new { WorkGroupNickNameId = 10, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA02", NickName = "Wichit" },
-                        new { WorkGroupNickNameId = 11, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA05", NickName = "Narintron" },
-                        new { WorkGroupNickNameId = 12, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA06", NickName = "San" },
-                        new { WorkGroupNickNameId = 13, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA07", NickName = "Suwan" },
-                        new { WorkGroupNickNameId = 14, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA08", NickName = "Phairat" },
-                        new { WorkGroupNickNameId = 15, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA09", NickName = "Kittipong" },
-                        new { WorkGroupNickNameId = 16, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA10", NickName = "Boonlert" },
-                        new { WorkGroupNickNameId = 17, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA12", NickName = "Thongdee" },
-                        new { WorkGroupNickNameId = 18, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA13", NickName = "Sompian" },
-                        new { WorkGroupNickNameId = 19, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA14", NickName = "Boonyuen" },
-                        new { WorkGroupNickNameId = 20, CreateDate = new DateTime(2018, 10, 27, 14, 42, 43, 432, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA18", NickName = "Sil" }
+                        new { WorkGroupNickNameId = 1, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 502, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA01", NickName = "S Chumsaeng" },
+                        new { WorkGroupNickNameId = 2, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA02", NickName = "S Malee" },
+                        new { WorkGroupNickNameId = 3, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA03", NickName = "S Kitti" },
+                        new { WorkGroupNickNameId = 4, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA04", NickName = "S Kritsada" },
+                        new { WorkGroupNickNameId = 5, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA05", NickName = "S Montree" },
+                        new { WorkGroupNickNameId = 6, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA06", NickName = "S Boonma" },
+                        new { WorkGroupNickNameId = 7, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA07", NickName = "S Sumruoy" },
+                        new { WorkGroupNickNameId = 8, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA08", NickName = "S Surat" },
+                        new { WorkGroupNickNameId = 9, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "CFA09", NickName = "S Yai" },
+                        new { WorkGroupNickNameId = 10, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA02", NickName = "Wichit" },
+                        new { WorkGroupNickNameId = 11, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA05", NickName = "Narintron" },
+                        new { WorkGroupNickNameId = 12, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA06", NickName = "San" },
+                        new { WorkGroupNickNameId = 13, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA07", NickName = "Suwan" },
+                        new { WorkGroupNickNameId = 14, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA08", NickName = "Phairat" },
+                        new { WorkGroupNickNameId = 15, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA09", NickName = "Kittipong" },
+                        new { WorkGroupNickNameId = 16, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA10", NickName = "Boonlert" },
+                        new { WorkGroupNickNameId = 17, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA12", NickName = "Thongdee" },
+                        new { WorkGroupNickNameId = 18, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA13", NickName = "Sompian" },
+                        new { WorkGroupNickNameId = 19, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA14", NickName = "Boonyuen" },
+                        new { WorkGroupNickNameId = 20, CreateDate = new DateTime(2018, 11, 2, 8, 35, 16, 515, DateTimeKind.Local), Creator = "SeedData", GroupCode = "DFA18", NickName = "Sil" }
                     );
                 });
 
@@ -827,6 +863,13 @@ namespace VipcoPlanning.Migrations
                     b.HasOne("VipcoPlanning.Models.Planning.WeldManHour", "WeldManHour")
                         .WithMany()
                         .HasForeignKey("WeldManHourId");
+                });
+
+            modelBuilder.Entity("VipcoPlanning.Models.Planning.PlanShipment", b =>
+                {
+                    b.HasOne("VipcoPlanning.Models.Planning.PlanMaster", "PlanMaster")
+                        .WithMany("PlanShipments")
+                        .HasForeignKey("PlanMasterId");
                 });
 
             modelBuilder.Entity("VipcoPlanning.Models.Planning.RateManHour", b =>

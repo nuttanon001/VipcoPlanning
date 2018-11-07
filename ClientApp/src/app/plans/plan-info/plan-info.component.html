@@ -52,14 +52,15 @@
               </mat-expansion-panel-header>
               <!--Row4-->
               <mat-form-field hintLabel="Management By">
-                <input matInput formControlName="ManagementByString"
-                       readonly required
+                <input matInput formControlName="ManagementName"
+                       required maxlength="500"
                        placeholder="Project Engineer" class="click-input" (click)="openDialog('Employee')">
+                <mat-hint [align]="end">{{InfoValueForm.controls.ManagementName.value?.length || 0}}/500</mat-hint>
               </mat-form-field>
               <!--Row5-->
               <mat-form-field>
                 <input matInput [matDatepicker]="DeliveryDate" formControlName="DeliveryDate"
-                       required
+                       required 
                        placeholder="DeliveryDate">
                 <mat-datepicker-toggle matSuffix [for]="DeliveryDate"></mat-datepicker-toggle>
                 <mat-datepicker #DeliveryDate></mat-datepicker>
@@ -80,11 +81,35 @@
                 <button mat-button color="warn" (click)="prevStep()">
                   <strong>Previous</strong>
                 </button>
-                <button mat-button matStepperNext color="primary">
+                <button mat-button (click)="nextStep()" color="primary">
                   <strong>Next</strong>
                 </button>
               </mat-action-row>
             </mat-expansion-panel>
+
+            <!--Expansion3-->
+            <mat-expansion-panel class="my-1" [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+              <!--Header-->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <strong>Date Shipment</strong>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <app-plan-shipment-table [dataRows]="InfoValue.PlanShipments" (returnSelectedWith)="OnPlanShipment($event)"
+                                       [readOnly]="denySave">
+              </app-plan-shipment-table>
+
+
+              <mat-action-row>
+                <button mat-button color="warn" (click)="prevStep()">
+                  <strong>Previous</strong>
+                </button>
+                <button mat-button matStepperNext (click)="nextStep()" color="primary">
+                  <strong>Next</strong>
+                </button>
+              </mat-action-row>
+            </mat-expansion-panel>
+
           </mat-accordion>
         </div>
       </form>

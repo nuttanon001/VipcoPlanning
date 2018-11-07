@@ -24,12 +24,12 @@ export class ActualMasterService extends BaseRestService<ActualMaster> {
   }
 
   /** add Model @param nObject */
-  getChartResult(nObject: ChartOption): Observable<ChartResult> {
+  getChartResult(nObject: ChartOption, subString: string = "ChartManHour/"): Observable<ChartResult> {
     // debug here
     // console.log("Path:", this.baseUrl);
     // console.log("Data is:", JSON.stringify(nObject));
 
-    return this.http.post<ChartResult>(this.baseUrl + "ChartManHour/", JSON.stringify(nObject),
+    return this.http.post<ChartResult>(this.baseUrl + subString, JSON.stringify(nObject),
       {
         headers: new HttpHeaders({
           "Content-Type": "application/json",

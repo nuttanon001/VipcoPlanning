@@ -8,10 +8,10 @@ const routes: Routes = [{
   path: "",
   component: PlanCenterComponent,
   children: [
-    {
-      path: "plan-schedule",
-      component: PlanScheduleComponent,
-    },
+    //{
+    //  path: "plan-schedule",
+    //  component: PlanScheduleComponent,
+    //},
     {
       path: ":key",
       component: PlanMasterComponent,

@@ -3,7 +3,7 @@ import { OnInit, Output, Input, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 
 export abstract class BaseInfoDialogComponent<Model>
-  implements OnInit{
+  implements OnInit {
 
   constructor(
   ) { }

@@ -10,14 +10,15 @@ export class ActualReportTableComponent implements OnInit {
   constructor() { }
   // Parameter
   @Input() datasource: Array<ActualFab>;
+  @Input() modeColumn: number = 1;
   columns: Array<any>;
   columnUppers: Array<any>;
   // OnInit
   ngOnInit() {
     this.columns = new Array;
     this.columns = [
-      { field: 'WorkShopName', header: 'Shop', width: 150, type: 1},
-      { field: 'WorkGroup', header: 'Group', width: 150, type: 1},
+      { field: 'WorkShopName', header: this.modeColumn === 1 ? 'Shop' : 'BomCode', width: 150, type: 1},
+      { field: 'WorkGroup', header: this.modeColumn === 1 ? 'Group' : 'Equipment', width: 150, type: 1},
       { field: 'WeightString', header: 'Weight', width: 100, type: 1},
 
       { field: 'PlanMHString', header: 'PlanMH', width: 80, type: 1},

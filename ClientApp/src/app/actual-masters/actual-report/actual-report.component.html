@@ -20,7 +20,7 @@
     <mat-spinner *ngIf="isLoading"></mat-spinner>
   </div>
   <div class="detail" *ngIf="!isLoading">
-    <app-actual-report-table [datasource]="datasource"></app-actual-report-table>
+    <app-actual-report-table [datasource]="datasource" [modeColumn]="mode"></app-actual-report-table>
     <hr class="my-5" />
     <app-actual-chart [newChartLabel]="chartLabel" [newChartData]="chartData"
                       [titleLabel]="titleLabel"

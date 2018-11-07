@@ -1,4 +1,5 @@
 import { BaseModel } from "../../shared/base-model.model";
+import { ActualType, ActualDetailType } from "./actual-detail.model";
 
 export interface ActualBom extends BaseModel {
   ActualBomId: number;
@@ -10,6 +11,8 @@ export interface ActualBom extends BaseModel {
   TotalManHourNTOT?: number;
   WeightPlan?: number;
   TotalPlanManHour?: number;
+  ActualType?: ActualType;
+  ActualDetailType?: ActualDetailType;
   // FK
   // ActualMasterId
   ActualMasterId?: number;

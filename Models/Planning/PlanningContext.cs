@@ -61,6 +61,7 @@ namespace VipcoPlanning.Models.Planning
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<PlanDetail> PlanDetails { get; set; }
         public DbSet<PlanMaster> PlanMasters { get; set; }
+        public DbSet<PlanShipment> PlanShipments { get; set; }
         public DbSet<RateManHour> RateManHours { get; set; }
         public DbSet<StandardTime> StandardTimes { get; set; }
         public DbSet<StandardTimeForWorkGroup> StandardTimeForWorkGroups { get; set; }

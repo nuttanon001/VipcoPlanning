@@ -11,4 +11,8 @@ export interface User {
   EmpCode?: string;
   // ViewModel
   NameThai?: string;
+  GroupName?: string;
+  GroupCode?: string;
+  LevelUserType?: string;
+  LevelPlanning?: string;
 }

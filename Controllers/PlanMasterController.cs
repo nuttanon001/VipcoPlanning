@@ -24,6 +24,7 @@ namespace VipcoPlanning.Controllers
     {
         private readonly IRepositoryPlanning<BillofMaterial> repositoryBom;
         private readonly IRepositoryPlanning<PlanDetail> repositoryPlanDetail;
+        private readonly IRepositoryPlanning<PlanShipment> repositoryPlanShipment;
         private readonly IRepositoryPlanning<StandardTime> repositoryStd;
         private readonly IRepositoryPlanning<EngineerManHour> repositoryEngMH;
         private readonly IRepositoryPlanning<FabricationManHour> repositoryFabMH;
@@ -40,6 +41,7 @@ namespace VipcoPlanning.Controllers
             IRepositoryPlanning<BillofMaterial> repoBom,
             IRepositoryPlanning<StandardTime> repoStd,
             IRepositoryPlanning<PlanDetail> repoPlanDetail,
+            IRepositoryPlanning<PlanShipment> repoPlanShipment,
             IRepositoryPlanning<EngineerManHour> repoEngMH,
             IRepositoryPlanning<FabricationManHour> repoFabMM,
             IRepositoryPlanning<PackingManHour> repoPakMH,
@@ -56,6 +58,7 @@ namespace VipcoPlanning.Controllers
             this.repositoryBom = repoBom;
             this.repositoryStd = repoStd;
             this.repositoryPlanDetail = repoPlanDetail;
+            this.repositoryPlanShipment = repoPlanShipment;
             this.repositoryEngMH = repoEngMH;
             this.repositoryFabMH = repoFabMM;
             this.repositoryPakMH = repoPakMH;
@@ -173,7 +176,11 @@ namespace VipcoPlanning.Controllers
                     dbPlanMaster.Modifyer = planMaster.Modifyer;
                     // Get PlanDetails
                     var dbPlanDetails = await this.repositoryPlanDetail.GetToListAsync(
-                        x => x,x => x.PlanMasterId == planMaster.PlanMasterId);
+                        x => x, x => x.PlanMasterId == planMaster.PlanMasterId,
+                        null,x => x.Include(z => z.EngineerManHour)
+                                   .Include(z => z.FabricationManHour)
+                                   .Include(z => z.PackingManHour)
+                                   .Include(z => z.WeldManHour));
 
                     if (dbPlanDetails.Any())
                     {
@@ -186,54 +193,88 @@ namespace VipcoPlanning.Controllers
 
                             var Weight = (item.ContentWeigth * 1000);
                             // EngineerManHour
-                            if (item.EngineerManHour != null)
+                            if (item.EngineerManHourId != null && item.EngineerManHourId.HasValue)
                             {
-                                item.EngineerManHour.EngineerWeight = Weight;
-                                item.EngineerManHour.CuttingPlanMH = item.EngineerManHour?.CuttingPlan != null ? (Weight / (item.EngineerManHour?.CuttingPlan?.Rate ?? 0)) : 0;
-                                item.EngineerManHour.CuttingPlanCheckMH = item.EngineerManHour?.CuttingPlanCheck != null ? (Weight / (item.EngineerManHour?.CuttingPlanCheck?.Rate ?? 0)) : 0;
-                                item.EngineerManHour.ShopDrawingMH = item.EngineerManHour?.ShopDrawing != null ? (Weight / (item.EngineerManHour?.ShopDrawing?.Rate ?? 0)) : 0;
-                                item.EngineerManHour.ShopDrawingCheckMH = item.EngineerManHour?.ShopDrawingCheck != null ? (Weight / (item.EngineerManHour?.ShopDrawingCheck?.Rate ?? 0)) : 0;
-                                item.EngineerManHour.PackingMH = item.EngineerManHour?.Packing != null ? (Weight / (item.EngineerManHour?.Packing?.Rate ?? 0)) : 0;
-                                item.EngineerManHour.PackingCheckMH = item.EngineerManHour?.PackingCheck != null ? (Weight / (item.EngineerManHour?.PackingCheck?.Rate ?? 0)) : 0;
+                                var engManHour = await this.repositoryEngMH.GetFirstOrDefaultAsync(x => x,
+                                    x => x.EngineerManHourId == item.EngineerManHourId,
+                                    null, x => x.Include(z => z.CuttingPlan)
+                                                .Include(z => z.CuttingPlanCheck)
+                                                .Include(z => z.ShopDrawing)
+                                                .Include(z => z.ShopDrawingCheck)
+                                                .Include(z => z.Packing)
+                                                .Include(z => z.PackingCheck));
 
-                                item.EngineerManHour.ModifyDate = item.ModifyDate;
-                                item.EngineerManHour.Modifyer = item.Modifyer;
-                                // Update EngineerManHour
-                                await this.repositoryEngMH.UpdateAsync(item.EngineerManHour, item.EngineerManHour.EngineerManHourId);
+                                if (engManHour != null)
+                                {
+                                    item.EngineerManHour.EngineerWeight = Weight;
+                                    item.EngineerManHour.CuttingPlanMH = engManHour?.CuttingPlan != null ? (Weight / (engManHour?.CuttingPlan?.Rate ?? 0)) : 0;
+                                    item.EngineerManHour.CuttingPlanCheckMH = engManHour?.CuttingPlanCheck != null ? (Weight / (engManHour?.CuttingPlanCheck?.Rate ?? 0)) : 0;
+                                    item.EngineerManHour.ShopDrawingMH = engManHour?.ShopDrawing != null ? (Weight / (engManHour?.ShopDrawing?.Rate ?? 0)) : 0;
+                                    item.EngineerManHour.ShopDrawingCheckMH = engManHour?.ShopDrawingCheck != null ? (Weight / (engManHour?.ShopDrawingCheck?.Rate ?? 0)) : 0;
+                                    item.EngineerManHour.PackingMH = engManHour?.Packing != null ? (Weight / (engManHour?.Packing?.Rate ?? 0)) : 0;
+                                    item.EngineerManHour.PackingCheckMH = engManHour?.PackingCheck != null ? (Weight / (engManHour?.PackingCheck?.Rate ?? 0)) : 0;
+
+                                    item.EngineerManHour.ModifyDate = item.ModifyDate;
+                                    item.EngineerManHour.Modifyer = item.Modifyer;
+                                    // Update EngineerManHour
+                                    await this.repositoryEngMH.UpdateAsync(item.EngineerManHour, item.EngineerManHour.EngineerManHourId);
+                                }
                             }
                             // FabricationManHour
-                            if (item.FabricationManHour != null)
+                            if (item.FabricationManHourId != null && item.FabricationManHourId.HasValue)
                             {
-                                item.FabricationManHour.FabricationWeight = Weight;
-                                item.FabricationManHour.FabricationMH = item.FabricationManHour?.Fabrication != null ? (Weight / (item.FabricationManHour?.Fabrication?.Rate ?? 0)) : 0;
-                                item.FabricationManHour.PerAssemblyMH = item.FabricationManHour?.PerAssembly != null ? (Weight / (item.FabricationManHour?.PerAssembly?.Rate ?? 0)) : 0;
+                                var fabManhour = await this.repositoryFabMH.GetFirstOrDefaultAsync(x => x,
+                                    x => x.FabricationManHourId == item.FabricationManHourId, null,
+                                    x => x.Include(z => z.Fabrication)
+                                          .Include(z => z.PerAssembly));
 
-                                item.FabricationManHour.ModifyDate = item.ModifyDate;
-                                item.FabricationManHour.Modifyer = item.Modifyer;
-                                // Update FabricationManHour
-                                await this.repositoryFabMH.UpdateAsync(item.FabricationManHour, item.FabricationManHour.FabricationManHourId);
+                                if (fabManhour != null)
+                                {
+                                    item.FabricationManHour.FabricationWeight = Weight;
+                                    item.FabricationManHour.FabricationMH = fabManhour?.Fabrication != null ? (Weight / (fabManhour?.Fabrication?.Rate ?? 0)) : 0;
+                                    item.FabricationManHour.PerAssemblyMH = fabManhour?.PerAssembly != null ? (Weight / (fabManhour?.PerAssembly?.Rate ?? 0)) : 0;
+
+                                    item.FabricationManHour.ModifyDate = item.ModifyDate;
+                                    item.FabricationManHour.Modifyer = item.Modifyer;
+                                    // Update FabricationManHour
+                                    await this.repositoryFabMH.UpdateAsync(item.FabricationManHour, item.FabricationManHour.FabricationManHourId);
+                                }
                             }
                             // PackingManHour
-                            if (item.PackingManHour != null)
+                            if (item.PackingManHourId != null && item.PackingManHourId.HasValue)
                             {
-                                item.PackingManHour.PackingWeight = Weight;
-                                item.PackingManHour.PackingMH = item.PackingManHour?.Packing != null ? (Weight / (item.PackingManHour?.Packing?.Rate ?? 0)) : 0;
+                                var packingManhour = await this.repositoryPakMH.GetFirstOrDefaultAsync(x => x,
+                                    x => x.PackingManHourId == item.PackingManHourId, null,
+                                    x => x.Include(z => z.Packing));
 
-                                item.PackingManHour.ModifyDate = item.ModifyDate;
-                                item.PackingManHour.Modifyer = item.Modifyer;
-                                // Update PackingManHour
-                                await this.repositoryPakMH.UpdateAsync(item.PackingManHour, item.PackingManHour.PackingManHourId);
+                                if (packingManhour != null)
+                                {
+                                    item.PackingManHour.PackingWeight = Weight;
+                                    item.PackingManHour.PackingMH = packingManhour?.Packing != null ? (Weight / (packingManhour?.Packing?.Rate ?? 0)) : 0;
+
+                                    item.PackingManHour.ModifyDate = item.ModifyDate;
+                                    item.PackingManHour.Modifyer = item.Modifyer;
+                                    // Update PackingManHour
+                                    await this.repositoryPakMH.UpdateAsync(item.PackingManHour, item.PackingManHour.PackingManHourId);
+                                }
                             }
                             // WeldManHour
-                            if (item.WeldManHour != null)
+                            if (item.WeldManHourId != null && item.WeldManHourId.HasValue)
                             {
-                                item.WeldManHour.WeldWetght = Weight;
-                                item.WeldManHour.WeldMH = item.WeldManHour?.Weld != null ? (Weight / (item.WeldManHour?.Weld?.Rate ?? 0)) : 0;
+                                var weldManhour = await this.repositoryWedMH.GetFirstOrDefaultAsync(x => x,
+                                    x => x.WeldManHourId == item.WeldManHourId, null,
+                                    x => x.Include(z => z.Weld));
 
-                                item.WeldManHour.ModifyDate = item.ModifyDate;
-                                item.WeldManHour.Modifyer = item.Modifyer;
-                                // Update PackingManHour
-                                await this.repositoryWedMH.UpdateAsync(item.WeldManHour, item.WeldManHour.WeldManHourId);
+                                if (weldManhour != null)
+                                {
+                                    item.WeldManHour.WeldWetght = Weight;
+                                    item.WeldManHour.WeldMH = item.WeldManHour?.Weld != null ? (Weight / (item.WeldManHour?.Weld?.Rate ?? 0)) : 0;
+
+                                    item.WeldManHour.ModifyDate = item.ModifyDate;
+                                    item.WeldManHour.Modifyer = item.Modifyer;
+                                    // Update PackingManHour
+                                    await this.repositoryWedMH.UpdateAsync(item.WeldManHour, item.WeldManHour.WeldManHourId);
+                                }
                             }
                             // Update plan-detail
                             await this.repositoryPlanDetail.UpdateAsync(item, item.PlanDetailId);
@@ -284,7 +325,7 @@ namespace VipcoPlanning.Controllers
                         ValidFrom = DateTime.Now
                     };
 
-                    if (record.PlanDetails.Any())
+                    if (!record.PlanDetails.Any())
                         record.PlanDetails = new List<PlanDetail>();
 
                     if (recordViewModel.PlanDetails != null)
@@ -374,6 +415,20 @@ namespace VipcoPlanning.Controllers
                         }
                     }
 
+                    if (recordViewModel.PlanShipments != null && recordViewModel.PlanShipments.Any())
+                    {
+                        foreach(var itemShipment in recordViewModel.PlanShipments)
+                        {
+                            record.PlanShipments.Add(new PlanShipment()
+                            {
+                                CreateDate = record.CreateDate,
+                                Creator = record.Creator,
+                                DateShipment = itemShipment.DateShipment,
+                                SequenceNo = itemShipment.SequenceNo,
+                            });
+                        }
+                    }
+
                     if (await this.repository.AddAsync(record) == null)
                         return BadRequest();
 
@@ -396,20 +451,75 @@ namespace VipcoPlanning.Controllers
         [HttpPut("UpdateV2")]
         public async Task<IActionResult> UpdateV2(int key, [FromBody] PlanMasterViewModel recordViewModel)
         {
-            if (recordViewModel == null)
-                return BadRequest(new { Error = "Data not been found." });
 
-            var record = this.mapper.Map<PlanMasterViewModel, PlanMaster>(recordViewModel);
-            // +7 Hour
-            record = this.helper.AddHourMethod(record);
-            // Set date for CrateDate Entity
-            if (record.GetType().GetProperty("ModifyDate") != null)
-                record.GetType().GetProperty("ModifyDate").SetValue(record, DateTime.Now);
+            var Message = "Data not been found.";
+            try
+            {
+                if (recordViewModel == null)
+                    return BadRequest(new { Error = "Data not been found." });
 
-            if (await this.repository.UpdateAsync(record, key) == null)
-                return BadRequest();
-           
-            return new JsonResult(record, this.DefaultJsonSettings);
+                var record = this.mapper.Map<PlanMasterViewModel, PlanMaster>(recordViewModel);
+                // +7 Hour
+                record = this.helper.AddHourMethod(record);
+                // Set date for CrateDate Entity
+                if (record.GetType().GetProperty("ModifyDate") != null)
+                    record.GetType().GetProperty("ModifyDate").SetValue(record, DateTime.Now);
+
+                if (recordViewModel.PlanShipments != null && recordViewModel.PlanShipments.Any())
+                {
+                    foreach (var itemShip in record.PlanShipments)
+                    {
+                        if (itemShip.PlanShipmentId > 0)
+                        {
+                            itemShip.ModifyDate = DateTime.Now;
+                            itemShip.Modifyer = record.Creator;
+                        }
+                        else
+                        {
+                            itemShip.CreateDate = DateTime.Now;
+                            itemShip.Creator = record.Creator;
+                        }
+                    }
+                }
+
+                if (await this.repository.UpdateAsync(record, key) != null)
+                {
+                    #region PlanShipment
+                    // filter
+                    var dbPlanShips = await this.repositoryPlanShipment.GetToListAsync(x => x, x => x.PlanMasterId == key);
+
+                    //Remove ActualBoms if edit remove it
+                    foreach (var dbPlanShip in dbPlanShips)
+                    {
+                        if (!recordViewModel.PlanShipments.Any(x => x.PlanShipmentId == dbPlanShip.PlanShipmentId))
+                            await this.repositoryPlanShipment.DeleteAsync(dbPlanShip.PlanShipmentId);
+                    }
+
+                    //Update ActualBoms or New ActualBoms
+                    foreach (var uPlanShip in recordViewModel.PlanShipments)
+                    {
+                        if (uPlanShip.PlanShipmentId > 0)
+                            await this.repositoryPlanShipment.UpdateAsync(uPlanShip, uPlanShip.PlanShipmentId);
+                        else
+                        {
+                            uPlanShip.PlanMasterId = record.PlanMasterId;
+                            await this.repositoryPlanShipment.AddAsync(uPlanShip);
+                        }
+                    }
+                    #endregion
+
+
+                    return new JsonResult(record, this.DefaultJsonSettings);
+                }
+            }
+            catch(Exception ex)
+            {
+                Message = $"Has error ${ex.ToString()}";
+            }
+
+            return BadRequest(new { Error = Message });
+
+          
         }
         // DELETE: api/PlanMaster/
         [HttpDelete()]

@@ -1,0 +1,53 @@
+<div class="mat-elevation-z8">
+  <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
+    <!-- Generic column definition -->
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnField">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.columnName }}</mat-header-cell>
+      <!--<mat-cell *matCellDef="let row">{{ column.cell(row) }}</mat-cell>-->
+      <ng-container>
+        <mat-cell *matCellDef="let row">
+          {{ column.cell(row) }}
+        </mat-cell>
+      </ng-container>
+    </ng-container>
+
+    <!-- Select Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <!-- Command Column -->
+    <ng-container matColumnDef="Command">
+      <mat-header-cell *matHeaderCellDef>
+        <button mat-icon-button color="primary" (click)="onActionClick(undefined,2)"
+                [disabled]="readOnly" matTooltip="Create">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <div>
+          <button mat-icon-button color="primary" (click)="onActionClick(row,2)"
+                  [disabled]="readOnly" matTooltip="Update">
+            <mat-icon>create</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onActionClick(row,0)"
+                  [disabled]="readOnly" matTooltip="Remove">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             [ngClass]="{'mat-row-highlight': selectedRow === row}"
+             (click)="selection.toggle(row)"
+             style="cursor:pointer"></mat-row>
+  </mat-table>
+</div>

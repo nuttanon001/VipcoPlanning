@@ -10,7 +10,7 @@ const routes: Routes = [{
   component: ActualCenterComponent,
   children: [
     {
-      path: "chart-data",
+      path: "chart-data/:mode",
       component: ActualReportComponent,
     },
     {

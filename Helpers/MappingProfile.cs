@@ -117,6 +117,8 @@ namespace VipcoPlanning.Helpers
                 // CuttingPlanNo
                 .ForMember(x => x.NameThai,
                            o => o.MapFrom(s => s.EmpCodeNavigation == null ? "-" : $"คุณ{s.EmpCodeNavigation.NameThai}"))
+                .ForMember(x => x.GroupCode, o => o.MapFrom(s => s.EmpCodeNavigation != null ? s.EmpCodeNavigation.GroupCode : ""))
+                .ForMember(x => x.GroupName, o => o.MapFrom(s => s.EmpCodeNavigation != null ? s.EmpCodeNavigation.GroupName : ""))
                 .ForMember(x => x.EmpCodeNavigation, o => o.Ignore());
 
             #endregion User

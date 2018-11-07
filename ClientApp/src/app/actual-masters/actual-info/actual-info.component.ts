@@ -46,11 +46,30 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
       this.service.getOneKeyNumber(InfoValue)
         .subscribe(dbData => {
           this.InfoValue = dbData;
+          this.isValid = true;
+
           if (this.InfoValue.ActualMasterId) {
             this.InfoValue.ActualDetails = new Array;
             this.serviceDetail.getByMasterId(this.InfoValue.ActualMasterId)
               .subscribe(data => {
-                this.InfoValue.ActualDetails = data.slice();
+                // this.InfoValue.ActualDetails = data.slice();
+                // $id
+                if (data) {
+                  data.forEach(item => {
+                    let temp: ActualDetail = {
+                      ActualDetailId:0
+                    };
+
+                    for (let key in item) {
+                      if (key.indexOf("$id") === -1) {
+                        temp[key] = item[key];
+                      } 
+                    }
+
+                    this.InfoValue.ActualDetails.push(temp);
+                  });
+                  this.InfoValue.ActualDetails = this.InfoValue.ActualDetails.slice();
+                }
               });
 
             this.InfoValue.ActualBoms = new Array;
@@ -58,21 +77,18 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
               .subscribe(data => {
                 if (data) {
                   data.forEach(item => {
-                    this.InfoValue.ActualBoms.push({
-                      ActualBomId: item.ActualBomId,
-                      ActualMasterId: item.ActualMasterId,
-                      BomCode: item.BomCode,
-                      BomName: item.BomName,
-                      CreateDate: item.CreateDate,
-                      Creator: item.Creator,
-                      ModifyDate: item.ModifyDate,
-                      Modifyer: item.Modifyer,
-                      TotalManHour: item.TotalManHour,
-                      TotalManHourNTOT: item.TotalManHourNTOT,
-                      TotalManHourOT: item.TotalManHourOT,
-                      TotalPlanManHour: item.TotalPlanManHour,
-                      WeightPlan: item.WeightPlan
-                    });
+                    let temp: ActualBom = {
+                      ActualBomId: 0
+                    };
+
+                    for (let key in item) {
+                      // console.log(key);
+                      if (key.indexOf("$id") === -1) {
+                        temp[key] = item[key];
+                      } 
+                    }
+
+                    this.InfoValue.ActualBoms.push(temp);
                   });
                   this.InfoValue.ActualBoms = this.InfoValue.ActualBoms.slice();
                 }
@@ -163,6 +179,8 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
   SetCommunicatetoParent(): void {
     if (this.isValid && this.InfoValue.ActualDetails) {
       if (this.InfoValue.ActualDetails.length > 0) {
+        // debug here
+        console.log("communicateService");
         this.communicateService.toParent(this.InfoValue);
       }
     }
@@ -241,6 +259,7 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
                     actualDetails[0].WorkShop = item.WorkShop;
                     actualDetails[0].NickName = item.NickName;
                     actualDetails[0].ActualType = item.ActualType;
+                    actualDetails[0].ActualDetailType = item.ActualDetailType;
                     actualDetails[0].ActualTypeString = item.ActualTypeString;
                   }
                 }
@@ -289,6 +308,8 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
                     actualBoms[0].GroupCode = item.GroupCode;
                     actualBoms[0].BomCode = item.BomCode;
                     actualBoms[0].BomName = item.BomName;
+                    actualBoms[0].ActualType = item.ActualType;
+                    actualBoms[0].ActualDetailType = item.ActualDetailType;
                   }
                 }
               });

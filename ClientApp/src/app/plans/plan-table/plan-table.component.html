@@ -43,11 +43,11 @@
       <mat-cell *matCellDef="let row">{{(row?.DeliveryDate | date:'dd/MM/yy') || "-"}}</mat-cell>
     </ng-container>
     <!--ManagementByString-->
-    <ng-container matColumnDef="ManagementByString">
+    <ng-container matColumnDef="ManagementName">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
         ManagementBy
       </mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row?.ManagementByString}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row?.ManagementName || row?.ManagementByString}}</mat-cell>
     </ng-container>
     <!-- Command Column -->
     <ng-container matColumnDef="Command">
