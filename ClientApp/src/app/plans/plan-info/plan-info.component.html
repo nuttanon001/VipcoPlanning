@@ -131,8 +131,8 @@
           <input type="file" (change)="onFileChange($event)" placeholder="Select excel planing file " readonly>
         </div>
         <div *ngIf="planDetailFormFile && planDetailFormFile.length">
-          <app-plan-detail [dataRows]="planDetailFormFile" [readOnly]="true">
-          </app-plan-detail>
+          <app-plan-detailmk2 [dataRows]="planDetailFormFile" [readOnly]="true">
+          </app-plan-detailmk2>
         </div>
       </div>
     </mat-step>
@@ -147,8 +147,8 @@
           <mat-spinner></mat-spinner>
         </div>
         <div *ngIf="InfoValue.PlanDetails && InfoValue.PlanDetails.length && !onLoading">
-          <app-plan-detail [dataRows]="InfoValue.PlanDetails" (returnSelected)="OnPlanDetailSelect($event)">
-          </app-plan-detail>
+          <app-plan-detailmk2 [dataRows]="InfoValue.PlanDetails" (returnSelected)="OnPlanDetailSelect($event)">
+          </app-plan-detailmk2>
         </div>
       </div>
       <ng-template #InfoValueDetail>

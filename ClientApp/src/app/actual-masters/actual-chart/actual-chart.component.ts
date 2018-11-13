@@ -122,7 +122,7 @@ export class ActualChartComponent implements OnInit, AfterViewInit, OnChanges {
                 // let fontFamily = 'Helvetica Neue';
                 ctx.font = Chart.helpers.fontString(fontSize, fontStyle);
                 // Just naively convert to string for now
-                let dataString = dataset.data[index].toFixed().toString() + ` ${dataset.lable1}`;
+                let dataString = dataset.data[index] ? dataset.data[index].toFixed().toString() + ` ${dataset.lable1}` : "-";
                 // let dataString = dataset.data[index].toFixed(1);
                 // Make sure alignment settings are correct
                 ctx.textAlign = 'center';

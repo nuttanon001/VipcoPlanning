@@ -6,6 +6,7 @@ import { StandardTimeCommuncateService } from '../shared/standard-time-communcat
 import { AuthService } from '../../core/auth/auth.service';
 import { DialogsService } from '../../dialogs/shared/dialogs.service';
 import { StandardTimeTableComponent } from '../standard-time-table/standard-time-table.component';
+import { count } from 'rxjs/operators';
 
 @Component({
   selector: 'app-standard-time-master',
@@ -32,5 +33,18 @@ export class StandardTimeMasterComponent extends BaseMasterComponent<StandardTim
   }
   onCheckStatus(infoValue?: StandardTime): boolean {
     return true;
+  }
+  // return master rate to current rate
+  returnMasterRateToCurrentRate(): void {
+    if (!this.ShowDetail) {
+      const modifiedBy = this.authService.getAuth.UserName || "unknow";
+      this.onLoading = true;
+      this.service.getRateMaster(modifiedBy)
+        .subscribe(result => {
+          if (result) {
+            this.onSaveComplete();
+          }
+        }, () => this.onLoading = false, () => this.onLoading = false);
+    }
   }
 }

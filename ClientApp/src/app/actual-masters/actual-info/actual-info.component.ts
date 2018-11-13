@@ -236,6 +236,9 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
           .subscribe((data: Array<ActualDetail>) => {
             if (data) {
               data.forEach(item => {
+                //debug
+                // console.log("item",JSON.stringify(item));
+
                 if (!this.InfoValue.ActualDetails.find(detail => detail.GroupCode === item.GroupCode))
                 {
                   let template: ActualDetail = {
@@ -289,7 +292,7 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
           .subscribe((data: Array<ActualBom>) => {
             if (data) {
               data.forEach(item => {
-                if (!this.InfoValue.ActualBoms.find(detail => detail.BomCode === item.BomCode)) {
+                if (!this.InfoValue.ActualBoms.find(detail => detail.BomCode === item.BomCode && detail.GroupCode === item.GroupCode)) {
                   let template: ActualBom = {
                     ActualBomId: 0,
                     ActualMasterId: this.InfoValue.ActualMasterId
@@ -300,7 +303,7 @@ export class ActualInfoComponent extends BaseInfoMk2Component<ActualMaster, Actu
                   this.InfoValue.ActualBoms.push(template);
                 }
                 else {
-                  const actualBoms = this.InfoValue.ActualBoms.filter(value => value.BomCode === item.BomCode);
+                  const actualBoms = this.InfoValue.ActualBoms.filter(value => value.BomCode === item.BomCode && value.GroupCode === item.GroupCode);
                   if (actualBoms[0]) {
                     actualBoms[0].TotalManHour = item.TotalManHour;
                     actualBoms[0].TotalManHourNTOT = item.TotalManHourNTOT;

@@ -85,6 +85,18 @@
             </mat-error>
           </mat-form-field>
 
+          <mat-form-field hintLabel="Specify the standard-time rate master">
+            <input matInput type="number" formControlName="RateMaster"
+                   required min="1"
+                   placeholder="Rate master for standard-time">
+            <mat-error *ngIf="InfoValueForm.controls.RateMaster.hasError('required')">
+              Standard-time rate master is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="InfoValueForm.controls.RateMaster.hasError('min')">
+              Minimum number of standard time rate master is <strong>1</strong>
+            </mat-error>
+          </mat-form-field>
+
           <mat-form-field hintLabel="Specify the standard-time unit of rate">
             <mat-select formControlName="RateUnit" required>
               <mat-option>-</mat-option>

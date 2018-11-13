@@ -37,6 +37,12 @@
               [disabled]="!canSave">
         <mat-icon>save</mat-icon>
       </button>
+      <hr />
+      <button mat-mini-fab color="warn" (click)="returnMasterRateToCurrentRate()"
+              matTooltipPosition="left" matTooltip="Get Master Rate"
+              [disabled]="ShowDetail">
+        <mat-icon>undo</mat-icon>
+      </button>
     </div>
   </div>
 </div>

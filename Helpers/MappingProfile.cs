@@ -207,6 +207,30 @@ namespace VipcoPlanning.Helpers
             CreateMap<WorkGroupHasNickName, NickNameViewModel>()
                 .ForMember(x => x.TypeName, o => o.MapFrom(s => System.Enum.GetName(typeof(ActualType), s.ActualType)));
             #endregion
+
+            #region EmpTimeVipcoView
+
+            CreateMap<EmpTimeVipcoView, ActualDaily>()
+                .ForMember(x => x.GroupCode, o => o.MapFrom(s => s.GroupCode))
+                .ForMember(x => x.Daily,o => o.MapFrom(s => s.WorkDate))
+                .ForMember(x => x.JobNo,o => o.MapFrom(s => s.JobNo))
+                .ForMember(x => x.TotalManHour, o => o.MapFrom(s => s.TotalWorkTime))
+                .ForMember(x => x.TotalManHourOT, o => o.MapFrom(s => s.TotalOverTime))
+                .ForMember(x => x.TotalManHourNTOT, o => o.MapFrom(s => s.TotalWorkTimeOverTime));
+
+            #endregion
+
+            #region EmpTimeSubView
+
+            CreateMap<EmpTimeSubView, ActualDaily>()
+                .ForMember(x => x.GroupCode, o => o.MapFrom(s => s.GroupMIS))
+                .ForMember(x => x.Daily, o => o.MapFrom(s => s.WorkDate))
+                .ForMember(x => x.JobNo, o => o.MapFrom(s => s.JobNo))
+                .ForMember(x => x.TotalManHour, o => o.MapFrom(s => s.TotalWorkTime))
+                .ForMember(x => x.TotalManHourOT, o => o.MapFrom(s => s.TotalOverTime))
+                .ForMember(x => x.TotalManHourNTOT, o => o.MapFrom(s => s.TotalWorkTimeOverTime));
+
+            #endregion
         }
     }
 }

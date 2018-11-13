@@ -34,6 +34,35 @@ namespace VipcoPlanning.Controllers
             return new JsonResult(this.mapper.Map<StandardTime,StandardTimeViewModel>(HasData), this.DefaultJsonSettings);
         }
 
+        //// GET: api/StandardTime/GetRateMaster/
+        [HttpGet("GetRateMaster")]
+        public async Task<IActionResult> GetRateMaster(string ModifiedBy)
+        {
+            var message = "Data not been found.";
+            try
+            {
+                var HasData = await this.repository.GetToListAsync(x => x, x => x.Rate != x.RateMaster);
+                if (HasData != null)
+                {
+                    foreach (var item in HasData)
+                    {
+                        item.Rate = item.RateMaster;
+                        item.ModifyDate = DateTime.Now;
+                        item.Modifyer = ModifiedBy;
+
+                        await this.repository.UpdateAsync(item, item.StandardTimeId);
+                    }
+
+                    return new JsonResult(new { Result = true }, this.DefaultJsonSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                message = $"Has error {ex.ToString()}";
+            }
+            return BadRequest(new { Error = message });
+        }
+
         // POST: api/StandardTime/GetScroll
         [HttpPost("GetScroll")]
         public async Task<IActionResult> GetScroll([FromBody] ScrollViewModel Scroll)

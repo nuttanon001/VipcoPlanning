@@ -18,6 +18,6 @@ export class StandardTimeTableComponent extends BaseTableComponent<StandardTime,
     authService: AuthService,
   ) {
     super(service, authService);
-    this.displayedColumns = ["select", "Code", "Name", "Rate", "RateUnit", "GroupStandardString","ForWorkGroupString"];
+    this.displayedColumns = ["select", "Code", "Name", "Rate","RateMaster", "GroupStandardString"];
   }
 }

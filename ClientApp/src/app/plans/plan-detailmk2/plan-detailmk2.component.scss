@@ -1,0 +1,30 @@
+@import "../../shared/styles/table.style.scss";
+
+/*.mat-column-NoTaskMachineCode {
+  flex: 0 0 125px;
+}
+.mat-column-AssignedByString, .mat-column-Command {
+  flex: 0 0 150px !important;
+}*/
+
+.mat-column-Description {
+  flex: 0 0 350px;
+}
+
+.mat-row, .mat-header-row {
+  width: 275vw; //PERSONALLY I HAD 45 COLUMNS
+}
+
+.mat-header-row { //THIS MAKES THE HEADER STICKY
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 1;
+  background-color: inherit;
+}
+
+.mat-table {
+  overflow: auto;
+  height: calc(#{$master-vh} - 230px);
+  width: calc(#{$master-vw} - 150px);
+}

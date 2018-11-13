@@ -16,6 +16,7 @@ import { PlanDetailInfoComponent } from './plan-detail-info/plan-detail-info.com
 import { PlanScheduleComponent } from './plan-schedule/plan-schedule.component';
 import { PlanShipmentService } from './shared/plan-shipment.service';
 import { PlanShipmentTableComponent } from './plan-shipment-table/plan-shipment-table.component';
+import { PlanDetailmk2Component } from './plan-detailmk2/plan-detailmk2.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { PlanShipmentTableComponent } from './plan-shipment-table/plan-shipment-
     PlanDetailComponent,
     PlanDetailInfoComponent,
     PlanScheduleComponent,
-    PlanShipmentTableComponent
+    PlanShipmentTableComponent,
+    PlanDetailmk2Component
   ],
   providers: [
     PlanService,

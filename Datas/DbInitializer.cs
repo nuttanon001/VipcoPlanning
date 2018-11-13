@@ -71,6 +71,32 @@ namespace VipcoPlanning.Datas
                             FROM    VIPCOTH.ShareData.dbo.V_Emp_Jobs_Sub AS EmpJob INNER JOIN
                                     VIPCOTH.ShareData.dbo.V_EmpTime_Sub AS EmpTime ON EmpJob.EmpCode = EmpTime.EmpCard AND EmpJob.WorkDate = EmpTime.WorkDate
                             GROUP BY EmpJob.ItemCode, EmpJob.JobNo");
+                    // View_EmpTime_Vipco
+                    Context.Database.ExecuteSqlCommand(
+                        @"	SELECT	EmpJob.GroupCode,
+			                        EmpJob.JobNo,
+			                        EmpJob.WorkDate,
+			                        SUM(ISNULL(EmpTime.NT, 0)) AS TotalWorkTime, 
+			                        SUM(ISNULL(EmpTime.OT, 0)) AS TotalOverTime,
+			                        SUM(ISNULL(EmpTime.NTOT, 0)) AS TotalWorkTimeOverTime
+	                        FROM	[VIPCOTH].[ShareData].[dbo].[V_Emp_Jobs] AS EmpJob
+			                        INNER JOIN [VIPCOTH].[ShareData].[dbo].[V_tblEmployee] AS Emp 
+				                        ON EmpJob.EmpCode = Emp.EmpCode  
+			                        INNER JOIN [VIPCOTH].[ShareData].[dbo].[V_EmpTime] AS EmpTime 
+				                        ON Emp.EmpCard = EmpTime.EmpCard and EmpJob.WorkDate = EmpTime.WorkDate
+	                        GROUP BY EmpJob.GroupCode, EmpJob.JobNo, EmpJob.WorkDate");
+                    // View_EmpTime_Sub
+                    Context.Database.ExecuteSqlCommand(
+                        @"	SELECT	EmpJob.JobNo, 
+			                        EmpJob.GroupMIS,
+			                        EmpJob.WorkDate,
+			                        SUM(ISNULL(EmpTime.NT, 0)) AS TotalWorkTime, 
+			                        SUM(ISNULL(EmpTime.NTOT, 0)) AS TotalWorkTimeOverTime, 
+			                        SUM(ISNULL(EmpTime.OT, 0)) AS TotalOverTime
+	                        FROM    VIPCOTH.ShareData.dbo.V_Emp_Jobs_Sub AS EmpJob 
+			                        INNER JOIN VIPCOTH.ShareData.dbo.V_EmpTime_Sub AS EmpTime 
+				                        ON EmpJob.EmpCode = EmpTime.EmpCard AND EmpJob.WorkDate = EmpTime.WorkDate
+	                        GROUP BY EmpJob.GroupMIS, EmpJob.JobNo, EmpJob.WorkDate");
                     #endregion
                 }
 

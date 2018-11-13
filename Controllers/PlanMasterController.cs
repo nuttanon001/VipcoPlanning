@@ -325,7 +325,7 @@ namespace VipcoPlanning.Controllers
                         ValidFrom = DateTime.Now
                     };
 
-                    if (!record.PlanDetails.Any())
+                    if (record.PlanDetails != null && record.PlanDetails.Any())
                         record.PlanDetails = new List<PlanDetail>();
 
                     if (recordViewModel.PlanDetails != null)

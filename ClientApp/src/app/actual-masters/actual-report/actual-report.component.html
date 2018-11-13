@@ -1,6 +1,6 @@
 <div>
   <form [formGroup]="reportForm" class="header">
-    <div>
+    <div *ngIf="mode !== 3">
       <i class="fa fa-object-group" aria-hidden="true"></i>
       <mat-form-field style="width:350px;">
         <input matInput formControlName="PlanMasterName"
@@ -9,6 +9,31 @@
                (click)="openDialog('PlanMaster')">
       </mat-form-field>
     </div>
+
+    <ng-container *ngIf="mode === 3">
+      <div>
+        <i class="fa fa-date" aria-hidden="true"></i>
+        <mat-form-field style="width:200px;">
+          <input matInput [matDatepicker]="SDate" formControlName="SDate"
+                 required [max]="reportForm.controls.EDate.value"
+                 placeholder="Start Date">
+          <mat-datepicker-toggle matSuffix [for]="SDate"></mat-datepicker-toggle>
+          <mat-datepicker #SDate></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <i class="fa fa-date" aria-hidden="true"></i>
+        <mat-form-field style="width:200px;">
+          <input matInput [matDatepicker]="EDate" formControlName="EDate"
+                 required [min]="reportForm.controls.SDate.value"
+                 placeholder="End Date">
+          <mat-datepicker-toggle matSuffix [for]="EDate"></mat-datepicker-toggle>
+          <mat-datepicker #EDate></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </ng-container>
+
     <div>
       <button mat-mini-fab color="warn" (click)="resetFilter()"
               matTooltipPosition="left" matTooltip="Reset all filter">
@@ -22,9 +47,11 @@
   <div class="detail" *ngIf="!isLoading">
     <app-actual-report-table [datasource]="datasource" [modeColumn]="mode"></app-actual-report-table>
     <hr class="my-5" />
-    <app-actual-chart [newChartLabel]="chartLabel" [newChartData]="chartData"
-                      [titleLabel]="titleLabel"
-                      [xAxesLabel]="xLabel" [yAxesLabel]="yLabel" [yAxes2Label]="yLabel2">
-    </app-actual-chart>
+    <ng-container *ngIf="mode !== 3">
+      <app-actual-chart [newChartLabel]="chartLabel" [newChartData]="chartData"
+                        [titleLabel]="titleLabel"
+                        [xAxesLabel]="xLabel" [yAxesLabel]="yLabel" [yAxes2Label]="yLabel2">
+      </app-actual-chart>
+    </ng-container>
   </div>
 </div>

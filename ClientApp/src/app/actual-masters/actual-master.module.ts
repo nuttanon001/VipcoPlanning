@@ -21,6 +21,8 @@ import { ActualReportComponent } from './actual-report/actual-report.component';
 import { ActualReportTableComponent } from './actual-report-table/actual-report-table.component';
 import { ActualBomService } from './shared/actual-bom.service';
 import { ActutalBomTableComponent } from './actutal-bom-table/actutal-bom-table.component';
+import { ActualDailyService } from './shared/actual-daily.service';
+import { ActualDailyComponent } from './actual-daily/actual-daily.component';
 
 @NgModule({
   imports: [
@@ -40,6 +42,7 @@ import { ActutalBomTableComponent } from './actutal-bom-table/actutal-bom-table.
     ActualReportComponent,
     ActualReportTableComponent,
     ActutalBomTableComponent,
+    ActualDailyComponent,
   ],
   providers: [
     ActualMasterService,
@@ -47,6 +50,7 @@ import { ActutalBomTableComponent } from './actutal-bom-table/actutal-bom-table.
     ActualMasterCommunicateService,
     WorkgroupManhourService,
     ActualBomService,
+    ActualDailyService,
   ]
 })
 export class ActualMasterModule { }

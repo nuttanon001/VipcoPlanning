@@ -15,6 +15,7 @@ namespace VipcoPlanning.Models.Planning
         [StringLength(100)]
         public string Name { get; set; }
         public double? Rate { get; set; }
+        public double? RateMaster { get; set; }
         [StringLength(20)]
         public string RateUnit { get; set; }
         [StringLength(250)]

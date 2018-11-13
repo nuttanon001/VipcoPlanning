@@ -6,6 +6,7 @@ import { ChartOption } from '../shared/chart-option.model';
 import { ChartData, ChartData2 } from '../shared/chart-data.model';
 import { ActualFab } from '../shared/actual-fab.model';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ActualDailyService } from '../shared/actual-daily.service';
 
 @Component({
   selector: 'app-actual-report',
@@ -15,6 +16,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 export class ActualReportComponent implements OnInit {
   constructor(
     private service: ActualMasterService,
+    private serviceDaily:ActualDailyService,
     private serviceDialogs: DialogsService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -58,6 +60,9 @@ export class ActualReportComponent implements OnInit {
       this.mode = Number(param.get("mode") || 1);
       // debug here
       // console.log(this.mode);
+      this.datasource = new Array;
+      this.chartLabel = new Array;
+      this.chartData = new Array;
       this.onValueChanged();
     }, error => console.error(error));
 
@@ -68,7 +73,7 @@ export class ActualReportComponent implements OnInit {
   buildForm(): void {
     this.reportForm = this.fb.group({
       PlanMasterId: [this.chartOption.PlanMasterId],
-      PlanMasterName: ["", [ Validators.required ]],
+      PlanMasterName: [""],
       SDate: [this.chartOption.SDate],
       EDate: [this.chartOption.EDate],
       Filter: [this.chartOption.Filter],
@@ -88,9 +93,21 @@ export class ActualReportComponent implements OnInit {
   // on value change
   onValueChanged(data?: any): void {
     if (!this.reportForm) { return; }
-    if (this.reportForm.valid) {
-      // get data
-      this.onGetChartData();
+
+    let optionResult = this.reportForm.getRawValue() as ChartOption;
+    //debug here
+    console.log(this.mode);
+    //optionResult
+    console.log(JSON.stringify(optionResult));
+
+    if (this.mode === 1 || this.mode === 2) {
+      if (optionResult.PlanMasterId) {
+        this.onGetChartData();
+      }
+    } else {
+      if (optionResult.SDate && optionResult.EDate) {
+        this.onGetChartData();
+      }
     }
   }
 
@@ -107,69 +124,84 @@ export class ActualReportComponent implements OnInit {
       subString = "ChartManHour/";
     } else if (this.mode === 2) {
       subString = "ChartBomManHour/";
+    } else if (this.mode === 3) {
+      subString = "";
     }
 
-    this.service.getChartResult(option, subString)
-      .subscribe(ChartResult => {
-        if (ChartResult && ChartResult.ProjectName && ChartResult.ActualFabTables) {
-          //debug here
-          // console.log(JSON.stringify(ChartResult));
+    if (this.mode === 1 || this.mode === 2) {
+      this.service.getChartResult(option, subString)
+        .subscribe(ChartResult => {
+          if (ChartResult && ChartResult.ProjectName && ChartResult.ActualFabTables) {
+            //debug here
+            // console.log(JSON.stringify(ChartResult));
 
-          this.titleLabel = ChartResult.ProjectName;
-          this.xLabel = this.mode === 1 ? "Work Group" : "Bom Name"; 
-          this.yLabel = "Manhours";
-          this.yLabel2 = "Percent";
-          this.chartLabel = ChartResult.Labels.slice();
+            this.titleLabel = ChartResult.ProjectName;
+            this.xLabel = this.mode === 1 ? "Work Group" : "Bom Name";
+            this.yLabel = "Manhours";
+            this.yLabel2 = "Percent";
+            this.chartLabel = ChartResult.Labels.slice();
 
-          this.datasource = new Array;
-          this.datasource = ChartResult.ActualFabTables.slice();
+            this.datasource = new Array;
+            this.datasource = ChartResult.ActualFabTables.slice();
 
-          this.chartData = new Array;
-          ChartResult.ChartData2s.forEach((item, index: number) => {
-            if (item) {
-              let color: string = `rgba(24,15,81,1)`;
-              let chartData: ChartData2 =
-              {
-                type: "line",
-                fill: false,
-                yAxisID: "y-axis-2",
-                label: item.Label,
-                backgroundColor: color,
-                borderColor: color,
-                lable1: "%",
-                data: item.ChartData,
-              };
-              this.chartData.push(chartData);
-            }
-          });
+            this.chartData = new Array;
+            ChartResult.ChartData2s.forEach((item, index: number) => {
+              if (item) {
+                let color: string = `rgba(24,15,81,1)`;
+                let chartData: ChartData2 =
+                {
+                  type: "line",
+                  fill: false,
+                  yAxisID: "y-axis-2",
+                  label: item.Label,
+                  backgroundColor: color,
+                  borderColor: color,
+                  lable1: "%",
+                  data: item.ChartData,
+                };
+                this.chartData.push(chartData);
+              }
+            });
 
-          ChartResult.ChartData1s.forEach((item, index: number) => {
-            if (item) {
-              let color: string = index === 1 ? `rgba(4,171,247,1)` : `rgba(246,55,24,1)`;
-              let chartData: ChartData2 =
-              {
-                type: "bar",
-                yAxisID: "y-axis-1",
-                label: item.Label,
-                backgroundColor: color,
-                borderColor: color,
-                lable1: "Hr.",
-                data: item.ChartData,
-              };
-              this.chartData.push(chartData);
-            }
-          });
-
-
-        }
-        else {
+            ChartResult.ChartData1s.forEach((item, index: number) => {
+              if (item) {
+                let color: string = index === 1 ? `rgba(4,171,247,1)` : `rgba(246,55,24,1)`;
+                let chartData: ChartData2 =
+                {
+                  type: "bar",
+                  yAxisID: "y-axis-1",
+                  label: item.Label,
+                  backgroundColor: color,
+                  borderColor: color,
+                  lable1: "Hr.",
+                  data: item.ChartData,
+                };
+                this.chartData.push(chartData);
+              }
+            });
+          }
+          else {
+            this.isLoading = false;
+            this.setChartData();
+          }
+        }, error => {
           this.isLoading = false;
           this.setChartData();
-        }
-      }, error => {
-        this.isLoading = false;
-        this.setChartData();
-      },() => this.isLoading = false);
+        }, () => this.isLoading = false);
+    }
+    else {
+      console.log(this.mode);
+      this.serviceDaily.getTableActualDaily(option)
+        .subscribe(result => {
+          if (result.ActualFabTables) {
+            this.datasource = new Array;
+            this.datasource = result.ActualFabTables.slice();
+          }
+        }, error => {
+          this.isLoading = false;
+          this.setChartData();
+        }, () => this.isLoading = false);
+    }
   }
 
   // reset

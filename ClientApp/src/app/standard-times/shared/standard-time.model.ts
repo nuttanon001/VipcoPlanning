@@ -5,6 +5,7 @@ export interface StandardTime extends BaseModel {
   Code?: string;
   Name?: string;
   Rate?: number;
+  RateMaster?: number;
   RateUnit?: string;
   Description?: string;
   Remark?: string;

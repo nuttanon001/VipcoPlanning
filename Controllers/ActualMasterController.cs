@@ -1,20 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using System.Collections.Generic;
-
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-
-using VipcoPlanning.Models.Planning;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using VipcoPlanning.Helper;
 using VipcoPlanning.Models.Machines;
+using VipcoPlanning.Models.Planning;
 using VipcoPlanning.Services;
 using VipcoPlanning.ViewModels;
-
-using AutoMapper;
-using VipcoPlanning.Helper;
 
 namespace VipcoPlanning.Controllers
 {
@@ -27,6 +23,7 @@ namespace VipcoPlanning.Controllers
         private readonly IRepositoryPlanning<PlanDetail> repositoryPlanDetail;
         private readonly IRepositoryPlanning<WorkGroupHasNickName> repositoryNickName;
         private readonly IRepositoryMachine<EmployeeGroupMis> repositoryWorkGroup;
+
         // GET: api/ActualMaster
         public ActualMasterController(IRepositoryPlanning<ActualMaster> repo,
             IRepositoryPlanning<ActualDetail> repoActualDetail,
@@ -34,7 +31,7 @@ namespace VipcoPlanning.Controllers
             IRepositoryPlanning<PlanDetail> repoPlanDetail,
             IRepositoryPlanning<WorkGroupHasNickName> repoNickName,
              IRepositoryMachine<EmployeeGroupMis> repoWorkGroup,
-            IMapper mapper): base(repo, mapper)
+            IMapper mapper) : base(repo, mapper)
         {
             // IRepositoryPlanning
             this.repositoryActualDetail = repoActualDetail;
@@ -75,18 +72,21 @@ namespace VipcoPlanning.Controllers
                     else
                         order = o => o.OrderBy(x => x.ProjectName);
                     break;
+
                 case "ValidTo":
                     if (Scroll.SortOrder == -1)
                         order = o => o.OrderByDescending(x => x.ValidTo);
                     else
                         order = o => o.OrderBy(x => x.ValidTo);
                     break;
+
                 case "ValidFrom":
                     if (Scroll.SortOrder == -1)
                         order = o => o.OrderByDescending(x => x.ValidFrom);
                     else
                         order = o => o.OrderBy(x => x.ValidFrom);
                     break;
+
                 default:
                     order = o => o.OrderByDescending(x => x.CreateDate);
                     break;
@@ -158,7 +158,7 @@ namespace VipcoPlanning.Controllers
                     {
                         var hasPlanDetail = await this.repositoryPlanDetail.GetToListAsync(
                             x => x, x => x.PlanMasterId == record.PlanMasterId && x.AssignmentToGroup == item.GroupCode,
-                            null,x => x.Include(z => z.FabricationManHour));
+                            null, x => x.Include(z => z.FabricationManHour));
 
                         if (hasPlanDetail != null && hasPlanDetail.Any())
                         {
@@ -254,6 +254,7 @@ namespace VipcoPlanning.Controllers
             if (record != null)
             {
                 #region ActualDetail
+
                 // filter
                 var dbActualDetails = await this.repositoryActualDetail.GetToListAsync(x => x, x => x.ActualMasterId == key);
 
@@ -289,9 +290,11 @@ namespace VipcoPlanning.Controllers
                         await this.repositoryActualDetail.AddAsync(uActualDetail);
                     }
                 }
-                #endregion
+
+                #endregion ActualDetail
 
                 #region ActualBom
+
                 // filter
                 var dbActualBoms = await this.repositoryActualBom.GetToListAsync(x => x, x => x.ActualMasterId == key);
 
@@ -327,7 +330,8 @@ namespace VipcoPlanning.Controllers
                         await this.repositoryActualBom.AddAsync(uActualBom);
                     }
                 }
-                #endregion
+
+                #endregion ActualBom
             }
 
             return new JsonResult(record, this.DefaultJsonSettings);
@@ -335,7 +339,7 @@ namespace VipcoPlanning.Controllers
 
         // POST: api/ActualMaster/ChartManHours
         [HttpPost("ChartManHour")]
-        public async Task<IActionResult> ChartManHour(OptionChartViewModel Confition)
+        public async Task<IActionResult> ChartManHour([FromBody] OptionChartViewModel Confition)
         {
             var Message = "";
             try
@@ -350,6 +354,7 @@ namespace VipcoPlanning.Controllers
                     if (HasData != null)
                     {
                         #region ChartData
+
                         // Labels
                         var Labels = new List<string>();
                         // Datas
@@ -358,16 +363,16 @@ namespace VipcoPlanning.Controllers
 
                         Labels = HasData.ActualDetails
                             .OrderBy(x => x.NickName)
-                            .Where(x => x.ActualType == ActualType.FABRICATE 
-                                        && 
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                            .Where(x => x.ActualType == ActualType.FABRICATE
+                                        &&
+                                       (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
                             .Select(x => x.NickName).ToList();
 
                         // Data Plans
                         var DataPlans = HasData.ActualDetails
                             .Where(x => x.ActualType == ActualType.FABRICATE
                                        &&
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                                       (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
                             .OrderBy(x => x.NickName)
                             .Select(x => x.TotalPlanManHour ?? 0).ToList();
                         ChartData1s.Add(new ChartDataViewModel()
@@ -380,9 +385,9 @@ namespace VipcoPlanning.Controllers
                         var DataActual = HasData.ActualDetails
                            .Where(x => x.ActualType == ActualType.FABRICATE
                                       &&
-                                      (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                                      (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
                            .OrderBy(x => x.NickName)
-                           .Select(x => x.TotalManHourNTOT ?? 0).ToList();
+                           .Select(x => (x.TotalManHour ?? 0) + (x.TotalManHourOT ?? 0)).ToList();
                         ChartData1s.Add(new ChartDataViewModel()
                         {
                             Label = "Actual MH",
@@ -393,50 +398,56 @@ namespace VipcoPlanning.Controllers
                         var DataProgress = HasData.ActualDetails
                            .Where(x => x.ActualType == ActualType.FABRICATE
                                       &&
-                                      (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                                      (x.TotalPlanManHour > 0 || x.TotalManHour > 0 || x.TotalManHourOT > 0))
                            .OrderBy(x => x.NickName)
                            .Select(x => (
-                           x.TotalManHourNTOT.HasValue && x.TotalManHourNTOT > 0 && x.TotalPlanManHour.HasValue && x.TotalPlanManHour > 0 ?
-                            ((x.TotalManHourNTOT ?? 0) / (x.TotalPlanManHour ?? 0)) * 100 : 0)).ToList();
+                              x.TotalManHour.HasValue && x.TotalManHour > 0 &&
+                              x.TotalManHourOT.HasValue && x.TotalManHourOT > 0 &&
+                              x.TotalPlanManHour.HasValue && x.TotalPlanManHour > 0 ?
+                            (((x.TotalManHour ?? 0) + (x.TotalManHourOT ?? 0)) / (x.TotalPlanManHour ?? 0)) * 100 : 0)).ToList();
                         ChartData2s.Add(new ChartDataViewModel()
                         {
                             Label = "Progress MH",
                             ChartData = DataProgress
                         });
-                        #endregion
+
+                        #endregion ChartData
 
                         #region TableData
 
                         var ActualFabTables = new List<ActualFabTable>();
 
                         foreach (var item in HasData.ActualDetails
-                            .Where(x => x.ActualType == ActualType.FABRICATE && 
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                            .Where(x => x.ActualType == ActualType.FABRICATE &&
+                                       (x.TotalPlanManHour > 0 || x.TotalManHour > 0 || x.TotalManHourOT > 0))
                             .OrderBy(z => z.WorkShop))
                         {
-                            ActualFabTables.Add(new ActualFabTable {
+                            ActualFabTables.Add(new ActualFabTable
+                            {
                                 WorkShopName = item.WorkShop,
                                 WorkGroup = item.NickName,
                                 Weight = item.WeightPlan,
                                 PlanMH = item.TotalPlanManHour,
-                                ActualMH = item.TotalManHourNTOT,
+                                ActualMH = (item.TotalManHour ?? 0) + (item.TotalManHourOT ?? 0),
+                                ActualMHxOT = (item.TotalManHour ?? 0) + (item.TotalManHourNTOT ?? 0),
                                 OverTimemultiply = HasData.OverTimemultiply ?? 1
                             });
                         }
 
-                        #endregion
+                        #endregion TableData
 
-                        return new JsonResult(new {
+                        return new JsonResult(new
+                        {
                             HasData.ProjectName,
                             Labels,
                             ChartData1s,
                             ChartData2s,
                             ActualFabTables,
-                        },this.DefaultJsonSettings);
+                        }, this.DefaultJsonSettings);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Message = $"Has error {ex.ToString()}";
             }
@@ -446,7 +457,7 @@ namespace VipcoPlanning.Controllers
 
         // POST: api/ActualMaster/ChartBomManHour
         [HttpPost("ChartBomManHour")]
-        public async Task<IActionResult> ChartBomManHour(OptionChartViewModel Confition)
+        public async Task<IActionResult> ChartBomManHour([FromBody] OptionChartViewModel Confition)
         {
             var Message = "";
             try
@@ -461,6 +472,7 @@ namespace VipcoPlanning.Controllers
                     if (HasData != null)
                     {
                         #region ChartData
+
                         // Labels
                         var Labels = new List<string>();
                         // Datas
@@ -468,19 +480,19 @@ namespace VipcoPlanning.Controllers
                         var ChartData2s = new List<ChartDataViewModel>();
 
                         Labels = HasData.ActualBoms
-                            .OrderBy(x => x.BomCode)
-                            .Where(x => x.ActualType == ActualType.FABRICATE
-                                        &&
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
-                            .Select(x => x.BomName).ToList();
+                             .Where(x => x.ActualType == ActualType.FABRICATE && !string.IsNullOrEmpty(x.BomCode.Trim()) &&
+                                   (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
+                            .GroupBy(x => new { x.BomCode, x.BomName })
+                            .OrderBy(x => x.Key.BomCode)
+                            .Select(x => x.Key.BomName ?? "-").ToList();
 
                         // Data Plans
                         var DataPlans = HasData.ActualBoms
-                            .Where(x => x.ActualType == ActualType.FABRICATE
-                                       &&
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
-                            .OrderBy(x => x.BomName)
-                            .Select(x => x.TotalPlanManHour ?? 0).ToList();
+                            .Where(x => x.ActualType == ActualType.FABRICATE && !string.IsNullOrEmpty(x.BomCode.Trim()) &&
+                                       (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
+                            .GroupBy(x => new { x.BomCode, x.BomName })
+                            .OrderBy(x => x.Key.BomName)
+                            .Select(x => x.Sum(z => z.TotalPlanManHour ?? 0)).ToList();
                         ChartData1s.Add(new ChartDataViewModel()
                         {
                             Label = "Plan MH",
@@ -489,11 +501,11 @@ namespace VipcoPlanning.Controllers
 
                         // Data Actuals
                         var DataActual = HasData.ActualBoms
-                           .Where(x => x.ActualType == ActualType.FABRICATE
-                                      &&
-                                      (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
-                           .OrderBy(x => x.BomName)
-                           .Select(x => x.TotalManHourNTOT ?? 0).ToList();
+                           .Where(x => x.ActualType == ActualType.FABRICATE && !string.IsNullOrEmpty(x.BomCode.Trim()) &&
+                                      (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
+                           .GroupBy(x => new { x.BomCode, x.BomName })
+                           .OrderBy(x => x.Key.BomName)
+                           .Select(x => x.Sum(z => (z.TotalManHour ?? 0) + (z.TotalManHourOT ?? 0))).ToList();
                         ChartData1s.Add(new ChartDataViewModel()
                         {
                             Label = "Actual MH",
@@ -502,41 +514,50 @@ namespace VipcoPlanning.Controllers
 
                         // Data Progress MH
                         var DataProgress = HasData.ActualBoms
-                           .Where(x => x.ActualType == ActualType.FABRICATE
-                                      &&
-                                      (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
+                           .Where(x => x.ActualType == ActualType.FABRICATE && !string.IsNullOrEmpty(x.BomCode.Trim()) &&
+                                      (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
                            .OrderBy(x => x.BomName)
-                           .Select(x => (
-                           x.TotalManHourNTOT.HasValue && x.TotalManHourNTOT > 0 && x.TotalPlanManHour.HasValue && x.TotalPlanManHour > 0 ?
-                            ((x.TotalManHourNTOT ?? 0) / (x.TotalPlanManHour ?? 0)) * 100 : 0)).ToList();
+                           .GroupBy(x => new { x.BomCode, x.BomName })
+                            .Select(x => new
+                            {
+                                mh = x.Sum(z =>
+                                (z.TotalManHour.HasValue && z.TotalManHour > 0 &&
+                                z.TotalManHourOT.HasValue && z.TotalManHourOT > 0 ?
+                                (z.TotalManHour ?? 0) + (z.TotalManHourOT ?? 0) : 0)),
+                                pl = x.Sum(z =>
+                                (z.TotalPlanManHour.HasValue && z.TotalPlanManHour > 0 ?
+                                z.TotalPlanManHour ?? 0 : 0)),
+                            }).ToList();
                         ChartData2s.Add(new ChartDataViewModel()
                         {
                             Label = "Progress MH",
-                            ChartData = DataProgress
+                            ChartData = DataProgress.Select(z => z.mh > 0 && z.pl > 0 ? (z.mh / z.pl) * 100 : 0).ToList()
                         });
-                        #endregion
+
+                        #endregion ChartData
 
                         #region TableData
 
                         var ActualFabTables = new List<ActualFabTable>();
 
                         foreach (var item in HasData.ActualBoms
-                            .Where(x => x.ActualType == ActualType.FABRICATE &&
-                                       (x.TotalPlanManHour > 0 || x.TotalManHourNTOT > 0))
-                            .OrderBy(z => z.BomName))
+                            .Where(x => x.ActualType == ActualType.FABRICATE && !string.IsNullOrEmpty(x.BomCode.Trim()) &&
+                                       (x.TotalPlanManHour > 0 || x.TotalManHourOT > 0 || x.TotalManHour > 0))
+                            .OrderBy(z => z.BomName).GroupBy(x => new { x.BomCode, x.BomName }))
                         {
                             ActualFabTables.Add(new ActualFabTable
                             {
-                                WorkShopName = item.BomCode,
-                                WorkGroup = item.BomName,
-                                Weight = item.WeightPlan,
-                                PlanMH = item.TotalPlanManHour,
-                                ActualMH = item.TotalManHourNTOT,
+                                WorkShopName = item.Key.BomCode,
+                                WorkGroup = item.Key.BomName,
+                                Weight = item.Sum(z => z.WeightPlan ?? 0),
+                                PlanMH = item.Sum(z => z.TotalPlanManHour ?? 0),
+                                ActualMH = (item.Sum(z => z.TotalManHour ?? 0)) + (item.Sum(z => z.TotalManHourOT ?? 0)),
+                                ActualMHxOT = (item.Sum(z => z.TotalManHour ?? 0)) + (item.Sum(z => z.TotalManHourNTOT ?? 0)),
                                 OverTimemultiply = HasData.OverTimemultiply ?? 1
                             });
                         }
 
-                        #endregion
+                        #endregion TableData
 
                         return new JsonResult(new
                         {

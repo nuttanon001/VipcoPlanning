@@ -18,7 +18,8 @@ import { AuthService } from '../../core/auth/auth.service';
 import { PlanShipment } from '../shared/plan-shipment.model';
 import { PlanShipmentService } from '../shared/plan-shipment.service';
 import * as moment from "moment";
-
+import { retry } from 'rxjs/operators';
+import { isDate } from 'util';
 
 @Component({
   selector: 'app-plan-info',
@@ -196,7 +197,7 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
   ////////////
   // Tested //
   ////////////
-
+  // From file
   onFileChange(evt: any) {
     /* wire up file reader */
     const target: DataTransfer = <DataTransfer>(evt.target);
@@ -216,28 +217,29 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
       let temp1 = <ModelExcel[]>XLSX.utils.sheet_to_json(ws, { dateNF: "dd/MM/yy" });
 
       temp1.forEach((value, index) => {
+        /*
         let newPlan: PlanDetail = {
           AssignmentToGroup: value.AssignmentToGroup,
           Code: value.Code,
           BomLevel2: value.BomLevel2,
           ContentWeigth: value.ContentWeigth,
-          CustomerDrawingDate: value.CustomerDrawingDate !== undefined ? new Date(value.CustomerDrawingDate) : undefined,
-          CuttingPlanDate: value.CuttingPlanDate !== undefined ? new Date(value.CuttingPlanDate) : undefined,
+          CustomerDrawingDate: value.CustomerDrawingDate !== undefined && isNaN(value.CustomerDrawingDate.getTime()) ? moment(value.CustomerDrawingDate).toDate() : undefined,
+          CuttingPlanDate: value.CuttingPlanDate !== undefined ? moment(value.CuttingPlanDate).toDate() : undefined,
           Description: value.Description,
-          FabPlanEDate: value.FabPlanEDate !== undefined ? new Date(value.FabPlanEDate) : undefined,
-          FabPlanSDate: value.FabPlanSDate !== undefined ? new Date(value.FabPlanSDate) : undefined,
-          InsuPlanEDate: value.InsuPlanEDate !== undefined ? new Date(value.InsuPlanEDate) : undefined,
-          InsuPlanSDate: value.InsuPlanSDate !== undefined ? new Date(value.InsuPlanSDate) : undefined,
-          MachineAndPartDate: value.MachineAndPartDate !== undefined ? new Date(value.MachineAndPartDate) : undefined,
-          MaterialDate: value.MaterialDate !== undefined ? new Date(value.MaterialDate) : undefined,
-          PackPlanEDate: value.PackPlanEDate !== undefined ? new Date(value.PackPlanEDate) : undefined,
-          PackPlanSDate: value.PackPlanSDate !== undefined ? new Date(value.PackPlanSDate) : undefined,
-          PaintPlanEDate: value.PaintPlanEDate !== undefined ? new Date(value.PaintPlanEDate) : undefined,
-          PaintPlanSDate: value.PaintPlanSDate !== undefined ? new Date(value.PaintPlanSDate) : undefined,
-          PreAssPlanEDate: value.PreAssPlanEDate !== undefined ? new Date(value.PreAssPlanEDate) : undefined,
-          PreAssPlanSDate: value.PreAssPlanSDate !== undefined ? new Date(value.PreAssPlanSDate) : undefined,
+          FabPlanEDate: value.FabPlanEDate !== undefined ? moment(value.FabPlanEDate).toDate() : undefined,
+          FabPlanSDate: value.FabPlanSDate !== undefined ? moment(value.FabPlanSDate).toDate() : undefined,
+          InsuPlanEDate: value.InsuPlanEDate !== undefined ? moment(value.InsuPlanEDate).toDate() : undefined,
+          InsuPlanSDate: value.InsuPlanSDate !== undefined ? moment(value.InsuPlanSDate).toDate() : undefined,
+          MachineAndPartDate: value.MachineAndPartDate !== undefined ? moment(value.MachineAndPartDate).toDate() : undefined,
+          MaterialDate: value.MaterialDate !== undefined ? moment(value.MaterialDate).toDate() : undefined,
+          PackPlanEDate: value.PackPlanEDate !== undefined ? moment(value.PackPlanEDate).toDate() : undefined,
+          PackPlanSDate: value.PackPlanSDate !== undefined ? moment(value.PackPlanSDate).toDate() : undefined,
+          PaintPlanEDate: value.PaintPlanEDate !== undefined ? moment(value.PaintPlanEDate).toDate() : undefined,
+          PaintPlanSDate: value.PaintPlanSDate !== undefined ? moment(value.PaintPlanSDate).toDate() : undefined,
+          PreAssPlanEDate: value.PreAssPlanEDate !== undefined ? moment(value.PreAssPlanEDate).toDate() : undefined,
+          PreAssPlanSDate: value.PreAssPlanSDate !== undefined ? moment(value.PreAssPlanSDate).toDate() : undefined,
           ResponsibilityBy: value.ResponsibilityBy,
-          ShopDrawingDate: value.ShopDrawingDate !== undefined ? new Date(value.ShopDrawingDate) : undefined,
+          ShopDrawingDate: value.ShopDrawingDate !== undefined ? moment(value.ShopDrawingDate).toDate() : undefined,
           Remark: value.Remark,
           CheckCuttingPlanStd: value.CheckCuttingPlanStd,
           CheckPackingFrameStd: value.CheckPackingFrameStd,
@@ -250,6 +252,29 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
           ShopDrawingStd: value.ShopDrawingStd,
           WeldStd: value.WeldStd
         };
+        */
+        let newPlan: PlanDetail = {};
+
+        for (let key in value) {
+          if (key.indexOf("$id") === -1) {
+            // console.log(key, value[key], value[key] instanceof Date);
+            if (key.indexOf("Date") !== -1) {
+              let temp = moment(value[key]).toDate();
+              // debug here
+              // console.log(key,temp, !isNaN(temp.getTime()));
+              if (!isNaN(temp.getTime())) {
+                newPlan[key] = temp;
+                // console.log(key, newPlan[key]);
+              } else {
+                newPlan[key] = undefined;
+              }
+            } else {
+              newPlan[key] = value[key];
+            }
+          }
+        }
+
+        // console.log(newPlan);
 
         this.planDetailFormFile.push(newPlan);
       });
@@ -261,7 +286,17 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
     };
     reader.readAsBinaryString(target.files[0]);
   }
+  // Change Data
+  onCheckDate(date1: Date): any {
+    if (date1 != undefined && isNaN(date1.getTime())) {
+      return moment(date1).toDate();
+    } else {
+      return undefined;
+    }
+
+  }
   // Dialog Action
+  // Plan detail
   OnPlanDetailSelect(Item: { data?: PlanDetail, option: number }) :void{
     if (Item) {
       if (Item.option === 1) {
@@ -298,7 +333,7 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
       }
     }
   }
-
+  // Plan shipment
   OnPlanShipment(Item: { data?: PlanShipment, option: number }): void {
     if (Item) {
       if (!Item.data) {
@@ -349,7 +384,7 @@ export class PlanInfoComponent extends BaseInfoComponent<PlanMaster,PlanService,
       }
     }
   }
-
+  // Sumite
   OnSubmiteOrCancel(InfoValueDetail?: PlanDetail): void {
     this.CancelSave.emit(false);
     if (InfoValueDetail) {

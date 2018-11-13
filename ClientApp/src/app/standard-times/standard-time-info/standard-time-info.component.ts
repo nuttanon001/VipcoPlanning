@@ -59,6 +59,12 @@ export class StandardTimeInfoComponent extends BaseInfoComponent<StandardTime,St
           Validators.min(1)
         ]
       ],
+      RateMaster: [this.InfoValue.RateMaster,
+        [
+          Validators.required,
+          Validators.min(1)
+        ]
+      ],
       RateUnit: [this.InfoValue.RateUnit,
         [
           Validators.required,

@@ -1,1 +1,9 @@
 @import "../../shared/styles/table.style.scss";
+
+.mat-column-Code, .mat-column-Rate, .mat-column-RateMaster {
+  flex: 0 0 105px;
+}
+
+.mat-column-GroupStandardString {
+  flex: 0 0 150px;
+}

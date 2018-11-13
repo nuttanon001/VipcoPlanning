@@ -1,0 +1,23 @@
+<div>
+  <div style="display:flex; flex-direction:row;">
+    <div *ngIf="regConfig" class="w-50">
+      <dynamic-form [fields]="regConfig" (submit)="submitDynamicForm($event)">
+      </dynamic-form>
+    </div>
+    <button mat-mini-fab color="primary" (click)="OnActualDaily()"
+            matTooltip="Get actual daily" [disabled]="!isValid">
+      <mat-icon>get_app</mat-icon>
+    </button>
+    &nbsp;&nbsp;
+    <button mat-mini-fab color="accent" (click)="onSubmit()"
+            matTooltip="Save" [disabled]="!canSave">
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="isLoading" class="loading-shade">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </div>
+  <div class="detail" *ngIf="!isLoading">
+    <app-actual-report-table [datasource]="infoValue" [modeColumn]="mode" [typeTable]="2"></app-actual-report-table>
+  </div>
+</div>

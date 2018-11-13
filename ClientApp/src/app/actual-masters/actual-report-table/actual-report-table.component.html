@@ -6,7 +6,7 @@
       </colgroup>
     </ng-template>-->
     <ng-template pTemplate="header" let-columns>
-      <tr>
+      <tr *ngIf="columnUppers">
         <th *ngFor="let colUpper of columnUppers" [attr.colspan]="colUpper.colspan" [ngStyle]="{'width.px':colUpper.width}"
             [ngClass]="{'PrHeader' : colUpper.type === 1,
                         'PoHeader' : colUpper.type === 2,
@@ -23,7 +23,12 @@
     <ng-template pTemplate="body" let-rowData let-columns="columns">
       <tr>
         <td *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
-          {{rowData[col.field] || '-'}}
+          <ng-container *ngIf="col.field === 'Daily';Else rowBlock">
+            {{(rowData[col.field] ? (rowData[col.field] | date:'dd/MM/yy') : '-')}}
+          </ng-container>
+          <ng-template #rowBlock>
+            {{rowData[col.field] || '-'}}
+          </ng-template>
         </td>
       </tr>
     </ng-template>

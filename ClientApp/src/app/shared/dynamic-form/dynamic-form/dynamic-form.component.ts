@@ -55,6 +55,7 @@ export class DynamicFormComponent implements OnInit {
         if (this.form.valid) {
           this.submit.emit(this.form.getRawValue());
         } else {
+          this.submit.emit(undefined);
           this.validateAllFormFields(this.form);
         }
       });

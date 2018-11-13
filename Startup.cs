@@ -40,7 +40,9 @@ namespace VipcoPlanning
             services.AddDbContextPool<MachineContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString("MachineConnection")))
                     .AddDbContextPool<PlanningContext>(option => 
-                option.UseSqlServer(Configuration.GetConnectionString("PlanningConnection")));
+                option.UseSqlServer(Configuration.GetConnectionString("PlanningConnection"),
+                opts => opts.CommandTimeout((int)System.TimeSpan.FromMinutes(2).TotalSeconds))); // Set SQL COMMAND T IMEOUT
+
             // Add Repositoy
             services.AddTransient(typeof(IRepositoryMachine<>), typeof(RepositoryMachine<>))
                     .AddTransient(typeof(IRepositoryPlanning<>),typeof(RepositoryPlanning<>));

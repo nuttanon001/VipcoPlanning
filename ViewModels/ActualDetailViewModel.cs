@@ -20,6 +20,7 @@ namespace VipcoPlanning.ViewModels
         public double? PlanMH { get; set; }
         public string PlanMHString => string.Format("{0:#,##0.00}", this.PlanMH);
         public double? ActualMH { get; set; }
+        public double? ActualMHxOT { get; set; }
         public string ActualMHString => string.Format("{0:#,##0.00}", this.ActualMH);
         public double? Diff => (this.PlanMH - this.ActualMH) ?? 0;
         public string DiffString => string.Format("{0:#,##0}", this.Diff);
@@ -27,7 +28,7 @@ namespace VipcoPlanning.ViewModels
         public double? OverTimemultiply { get; set; }
         public double? PlanMHOT => this.PlanMH * (this.OverTimemultiply ?? 1) ;
         public string PlanMHOTString => string.Format("{0:#,##0.00}", this.PlanMHOT);
-        public double? ActualMHOT => this.ActualMH * (this.OverTimemultiply ?? 1);
+        public double? ActualMHOT => this.ActualMHxOT * (this.OverTimemultiply ?? 1);
         public string ActualMHOTString => string.Format("{0:#,##0.00}", this.ActualMHOT);
         public double? DiffOT => (this.PlanMHOT - this.ActualMHOT) ?? 0;
         public string DiffOTString => string.Format("{0:#,##0.00}", this.DiffOT);

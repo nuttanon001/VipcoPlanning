@@ -27,12 +27,12 @@
         <!--Menu-1-->
         <mat-menu class="mouseleave" #menu1="matMenu" [overlapTrigger]="true">
           <div (mouseleave)="menuOnCloseMenu(1)" style="padding-top:20px;">
-<!--
-  <button mat-menu-item [routerLink]="['/plan/plan-schedule']" routerLinkActive="active">
-    <mat-icon>date_range</mat-icon>
-    <span>&nbsp;Schedule-1&nbsp;</span>
-  </button>
--->
+            <!--
+    <button mat-menu-item [routerLink]="['/plan/plan-schedule']" routerLinkActive="active">
+      <mat-icon>date_range</mat-icon>
+      <span>&nbsp;Schedule-1&nbsp;</span>
+    </button>
+  -->
             <button mat-menu-item [routerLink]="['/actual/chart-data','1']" routerLinkActive="active">
               <mat-icon>donut_small</mat-icon>
               <span>&nbsp;WorkGroup-ChartData&nbsp;</span>
@@ -40,6 +40,10 @@
             <button mat-menu-item [routerLink]="['/actual/chart-data','2']" routerLinkActive="active">
               <mat-icon>widgets</mat-icon>
               <span>&nbsp;BomCode-ChartData&nbsp;</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/actual/chart-data','3']" routerLinkActive="active">
+              <mat-icon>widgets</mat-icon>
+              <span>&nbsp;Actual-Daily&nbsp;</span>
             </button>
           </div>
         </mat-menu>
@@ -59,6 +63,10 @@
             <button mat-menu-item [routerLink]="['/actual']" routerLinkActive="active">
               <mat-icon>transfer_within_a_station</mat-icon>
               <span>&nbsp;Actual Manhour&nbsp;</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/actual/data-daily']" routerLinkActive="active">
+              <mat-icon>markunread_mailbox</mat-icon>
+              <span>&nbsp;Actual Daily&nbsp;</span>
             </button>
             <hr />
             <button mat-menu-item [routerLink]="['/stardard-time']" routerLinkActive="active">
