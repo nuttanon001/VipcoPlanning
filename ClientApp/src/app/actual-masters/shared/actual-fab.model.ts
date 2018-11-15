@@ -1,4 +1,5 @@
 export interface ActualFab {
+  JobNo?: string;
   WorkShopName?: string;
   WorkGroup?: string;
   Weight?: number;
@@ -21,4 +22,12 @@ export interface ActualFab {
   ActualKg?: string;
   PlanMT?: string;
   ActualMT?: string;
+  // Addition
+  NormalTime?: number;
+  OverTime?: number;
+  OverTimeX?: number;
+  NormalTimeString?: string;
+  OverTimeString?: string;
+  OverTimeXString?: string;
+  Status?: string;
 }

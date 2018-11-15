@@ -72,7 +72,7 @@ namespace VipcoPlanning.Controllers
             this.repositoryWorkGroupShop = repoWorkGropShop;
         }
 
-        readonly Func<string, string> TrimAndLower = s1 => s1.Trim().ToLower();
+        readonly Func<string, string> TrimAndLower = s1 => string.IsNullOrEmpty(s1) ? null : s1.Trim().ToLower();
 
         // GET: api/controller/5
         [HttpGet("GetKeyNumber")]
@@ -349,11 +349,15 @@ namespace VipcoPlanning.Controllers
                             if ((await this.repositoryGroupMis.GetFirstOrDefaultAsync(x => x, e => e.GroupMis == mapData.AssignmentToGroup)) == null)
                                 mapData.AssignmentToGroup = "";
 
-                            // Bom
-                            Expression<Func<BillofMaterial, bool>> expression = b => TrimAndLower(b.Code).Contains(TrimAndLower(clone.BomLevel2));
-                            var BomId = (await this.repositoryBom.GetFirstOrDefaultAsync(x => x, expression))?.BillofMaterialId ?? 0;
-                            if (BomId > 0)
-                                mapData.BillofMaterialId = BomId;
+                            if (clone.BomLevel2 != null)
+                            {
+                                // Bom
+                                Expression<Func<BillofMaterial, bool>> expression = b => TrimAndLower(b.Code).Contains(TrimAndLower(clone.BomLevel2));
+                                var BomId = (await this.repositoryBom.GetFirstOrDefaultAsync(x => x, expression))?.BillofMaterialId ?? 0;
+                                if (BomId > 0)
+                                    mapData.BillofMaterialId = BomId;
+                            }
+                           
                             //Std Eng
                             if (!string.IsNullOrEmpty(clone.ShopDrawingStd) || !string.IsNullOrEmpty(clone.CuttingPlanStd) || !string.IsNullOrEmpty(clone.PackingFrameStd))
                             {

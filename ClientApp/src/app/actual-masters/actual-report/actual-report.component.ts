@@ -40,7 +40,17 @@ export class ActualReportComponent implements OnInit {
   xLabel: string = "xLabel";
   yLabel: string = "yLabel";
   yLabel2: string = "yLabel";
+  // Date
+  RequestDate?: Date;
+  Status?: string;
 
+  get showOption(): boolean {
+    if (this.mode === 1 || this.mode === 2 || this.mode === 6) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   ngOnInit() {
     // Init
@@ -74,6 +84,8 @@ export class ActualReportComponent implements OnInit {
     this.reportForm = this.fb.group({
       PlanMasterId: [this.chartOption.PlanMasterId],
       PlanMasterName: [""],
+      BomId: [this.chartOption.BomId],
+      BomName: [""],
       SDate: [this.chartOption.SDate],
       EDate: [this.chartOption.EDate],
       Filter: [this.chartOption.Filter],
@@ -96,16 +108,20 @@ export class ActualReportComponent implements OnInit {
 
     let optionResult = this.reportForm.getRawValue() as ChartOption;
     //debug here
-    console.log(this.mode);
+    //console.log(this.mode);
     //optionResult
-    console.log(JSON.stringify(optionResult));
+    //console.log(JSON.stringify(optionResult));
 
-    if (this.mode === 1 || this.mode === 2) {
+    if (this.showOption) {
       if (optionResult.PlanMasterId) {
         this.onGetChartData();
       }
     } else {
-      if (optionResult.SDate && optionResult.EDate) {
+      if (this.mode === 5) {
+        if (optionResult.BomId) {
+          this.onGetChartData();
+        }
+      } else if (optionResult.SDate && optionResult.EDate) {
         this.onGetChartData();
       }
     }
@@ -124,7 +140,7 @@ export class ActualReportComponent implements OnInit {
       subString = "ChartManHour/";
     } else if (this.mode === 2) {
       subString = "ChartBomManHour/";
-    } else if (this.mode === 3) {
+    } else if (!this.showOption) {
       subString = "";
     }
 
@@ -134,6 +150,8 @@ export class ActualReportComponent implements OnInit {
           if (ChartResult && ChartResult.ProjectName && ChartResult.ActualFabTables) {
             //debug here
             // console.log(JSON.stringify(ChartResult));
+            this.RequestDate = ChartResult.ReportDate;
+            this.Status = ChartResult.Status;
 
             this.titleLabel = ChartResult.ProjectName;
             this.xLabel = this.mode === 1 ? "Work Group" : "Bom Name";
@@ -182,6 +200,9 @@ export class ActualReportComponent implements OnInit {
           }
           else {
             this.isLoading = false;
+            this.datasource = new Array;
+            this.RequestDate = undefined;
+            this.Status = undefined;
             this.setChartData();
           }
         }, error => {
@@ -189,8 +210,8 @@ export class ActualReportComponent implements OnInit {
           this.setChartData();
         }, () => this.isLoading = false);
     }
-    else {
-      console.log(this.mode);
+    else if (this.mode === 3) {
+      // console.log(this.mode);
       this.serviceDaily.getTableActualDaily(option)
         .subscribe(result => {
           if (result.ActualFabTables) {
@@ -198,6 +219,43 @@ export class ActualReportComponent implements OnInit {
             this.datasource = result.ActualFabTables.slice();
           }
         }, error => {
+          this.isLoading = false;
+          this.setChartData();
+        }, () => this.isLoading = false);
+    } else if (this.mode === 4) {
+      // console.log(this.mode);
+      this.serviceDaily.getTableActualDaily(option, "TableActualMonthly/")
+        .subscribe(result => {
+          if (result.ActualFabTables) {
+            this.datasource = new Array;
+            this.datasource = result.ActualFabTables.slice();
+          }
+        }, () => {
+          this.isLoading = false;
+          this.setChartData();
+        }, () => this.isLoading = false);
+    } else if (this.mode === 5) {
+      this.service.getChartResult(option, "TableBomManHour/")
+        .subscribe(result => {
+          if (result.ActualFabTables) {
+            this.datasource = new Array;
+            this.datasource = result.ActualFabTables.slice();
+          }
+        }, () => {
+          this.isLoading = false;
+          this.setChartData();
+        }, () => this.isLoading = false);
+    } else if (this.mode === 6) {
+      this.service.getChartResult(option, "ProjectSummanyManHour/")
+        .subscribe(result => {
+          if (result.ActualFabTables) {
+            this.RequestDate = result.ReportDate;
+            this.Status = result.Status;
+
+            this.datasource = new Array;
+            this.datasource = result.ActualFabTables.slice();
+          }
+        }, () => {
           this.isLoading = false;
           this.setChartData();
         }, () => this.isLoading = false);
@@ -235,6 +293,17 @@ export class ActualReportComponent implements OnInit {
               });
             }
           })
+      }
+      else if (mode.indexOf("Bom") !== -1) {
+        this.serviceDialogs.dialogInfoBomLowLevel(this.viewContainerRef, { BillofMaterialId: -99 })
+          .subscribe(resultBom => {
+            if (resultBom) {
+              this.reportForm.patchValue({
+                BomId: resultBom.BillofMaterialId,
+                BomName: resultBom.Name
+              });
+            }
+          });
       }
     }
   }

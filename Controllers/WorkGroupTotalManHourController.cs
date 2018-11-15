@@ -102,6 +102,9 @@ namespace VipcoPlanning.Controllers
                     if (hasProject != null)
                     {
                         var MapDatas = new List<ActualDetailViewModel>();
+
+                        #region ActualData
+
                         var WorkShop = await this.repositoryWorkShop.GetToListAsync(x => x, null, null, x => x.Include(z => z.WorkShop));
                         var WorkGroups = await this.repositoryWorkGroup.GetToListAsync(x => x);
                         var WorkNicks = await this.repositoryNickName.GetToListAsync(x => x);
@@ -170,6 +173,12 @@ namespace VipcoPlanning.Controllers
                                 }
                             }
                         }
+
+                        #endregion
+
+                        #region PlanData
+
+                        #endregion
 
                         if (MapDatas.Any())
                             return new JsonResult(MapDatas, this.DefaultJsonSettings);

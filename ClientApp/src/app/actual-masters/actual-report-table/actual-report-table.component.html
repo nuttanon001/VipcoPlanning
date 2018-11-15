@@ -1,10 +1,11 @@
 <table *ngIf="datasource">
-  <p-table [columns]="columns" [value]="datasource">
-    <!--<ng-template pTemplate="colgroup" let-columns>
+  <p-table #dt [columns]="columns" [value]="datasource" [scrollable]="true"
+           [style]="{width:'98vw'}" [scrollHeight]="scrollHeight">
+    <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
         <col *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
       </colgroup>
-    </ng-template>-->
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr *ngIf="columnUppers">
         <th *ngFor="let colUpper of columnUppers" [attr.colspan]="colUpper.colspan" [ngStyle]="{'width.px':colUpper.width}"
@@ -16,7 +17,13 @@
       </tr>
       <tr>
         <th *ngFor="let col of columns" [ngStyle]="{'width.px':col.width}">
-          {{col.header}}
+          <ng-container *ngIf="col.header !== 'JobNumberMode4';else JobNoBlock">
+            {{col.header}}
+          </ng-container>
+          <ng-template #JobNoBlock>
+            <p-dropdown [options]="options" [style]="{'width':'100%'}" appendTo="body"
+                        (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
+          </ng-template>
         </th>
       </tr>
     </ng-template>
@@ -32,18 +39,23 @@
         </td>
       </tr>
     </ng-template>
-    <!--<ng-template pTemplate="footer" let-columns>
+    <ng-template *ngIf="columnFooter" pTemplate="footer" let-columns>
       <tr>
-        <td *ngFor="let col of columns">
-          <ng-container *ngIf="col.field !== 'LocationCode';Else TotalBlock">
-            Total
+        <td *ngFor="let foot of columnFooter" [attr.colspan]="foot.colspan">
+          <ng-container *ngIf="foot.header;else footerBlock">
+            <strong>{{foot.header}}</strong> 
           </ng-container>
-          <ng-template #TotalBlock>
-            {{datasource}}
+          <ng-template #footerBlock>
+            <ng-container *ngIf="foot.type === 1;else percentBlock">
+              {{(getSum(foot.field) || 0) | number :'1.0-2'}}
+            </ng-container>
+            <ng-template #percentBlock>
+              {{getPercent(foot.field) || 0}}
+            </ng-template>
           </ng-template>
         </td>
       </tr>
-    </ng-template>-->
+    </ng-template>
   </p-table>
 </table>
 <!--<ng-template #ElseBlock>

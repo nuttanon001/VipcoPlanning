@@ -32,8 +32,8 @@ export class ActualDailyService extends BaseRestService<ActualDaily> {
   }
 
   /** TableActualDaily */
-  getTableActualDaily(nObject: ChartOption): Observable<ChartResult> {
-    return this.http.post<ChartResult>(this.baseUrl + "TableActualDaily/", JSON.stringify(nObject),
+  getTableActualDaily(nObject: ChartOption, subString: string = "TableActualDaily/"): Observable<ChartResult> {
+    return this.http.post<ChartResult>(this.baseUrl + subString, JSON.stringify(nObject),
       { headers: new HttpHeaders({
           "Content-Type": "application/json",
         })

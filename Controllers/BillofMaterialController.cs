@@ -65,7 +65,8 @@ namespace VipcoPlanning.Controllers
             {
                 string keyword = temp;
                 predicate = predicate.Or(x => x.Name.ToLower().Contains(keyword) ||
-                                              x.Description.ToLower().Contains(keyword));
+                                              x.Description.ToLower().Contains(keyword) ||
+                                              x.Code.ToLower().Contains(keyword));
             }
             if (!string.IsNullOrEmpty(Scroll.Where))
                 predicate = predicate.And(p => p.Creator == Scroll.Where);

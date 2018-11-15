@@ -27,11 +27,11 @@
         <!--Menu-1-->
         <mat-menu class="mouseleave" #menu1="matMenu" [overlapTrigger]="true">
           <div (mouseleave)="menuOnCloseMenu(1)" style="padding-top:20px;">
-            <!--
-    <button mat-menu-item [routerLink]="['/plan/plan-schedule']" routerLinkActive="active">
-      <mat-icon>date_range</mat-icon>
-      <span>&nbsp;Schedule-1&nbsp;</span>
-    </button>
+  <!--
+      <button mat-menu-item [routerLink]="['/plan/plan-schedule']" routerLinkActive="active">
+        <mat-icon>date_range</mat-icon>
+        <span>&nbsp;Schedule-1&nbsp;</span>
+      </button>
   -->
             <button mat-menu-item [routerLink]="['/actual/chart-data','1']" routerLinkActive="active">
               <mat-icon>donut_small</mat-icon>
@@ -41,9 +41,22 @@
               <mat-icon>widgets</mat-icon>
               <span>&nbsp;BomCode-ChartData&nbsp;</span>
             </button>
+            <button mat-menu-item [routerLink]="['/actual/chart-data','6']" routerLinkActive="active">
+              <mat-icon>poll_black</mat-icon>
+              <span>&nbsp;Project-Summany&nbsp;</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/actual/chart-data','5']" routerLinkActive="active">
+              <mat-icon>local_convenience_store</mat-icon>
+              <span>&nbsp;BomCode-Table&nbsp;</span>
+            </button>
+            <hr />
             <button mat-menu-item [routerLink]="['/actual/chart-data','3']" routerLinkActive="active">
-              <mat-icon>widgets</mat-icon>
+              <mat-icon>event_available</mat-icon>
               <span>&nbsp;Actual-Daily&nbsp;</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/actual/chart-data','4']" routerLinkActive="active">
+              <mat-icon>insert_invitation</mat-icon>
+              <span>&nbsp;Actual-Monthly&nbsp;</span>
             </button>
           </div>
         </mat-menu>

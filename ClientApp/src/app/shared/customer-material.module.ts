@@ -17,6 +17,7 @@ import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import {
   DataTableModule,
   SharedModule,
+  DropdownModule,
 } from "primeng/primeng";
 import { TableModule } from 'primeng/table';
 // component
@@ -72,6 +73,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
     DataTableModule,
     SharedModule,
     TableModule,
+    DropdownModule
   ],
   exports: [
     // material
@@ -111,6 +113,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
     DataTableModule,
     SharedModule,
     TableModule,
+    DropdownModule
   ],
   entryComponents: [
     SearchBoxComponent,

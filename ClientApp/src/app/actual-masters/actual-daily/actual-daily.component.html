@@ -18,6 +18,7 @@
     <mat-spinner *ngIf="isLoading"></mat-spinner>
   </div>
   <div class="detail" *ngIf="!isLoading">
-    <app-actual-report-table [datasource]="infoValue" [modeColumn]="mode" [typeTable]="2"></app-actual-report-table>
+    <app-actual-report-table [datasource]="infoValue" [modeColumn]="mode"
+                             [typeTable]="2" [scrollHeight]="'75vh'"></app-actual-report-table>
   </div>
 </div>

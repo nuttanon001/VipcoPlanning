@@ -43,12 +43,12 @@ export class PlanMasterComponent extends BaseMasterComponent<PlanMaster,PlanServ
     return true;
   }
   // on calculator plan-master
-  onCalculatorPlanMaster(): void {
+  onCalculatorPlanMaster(option:boolean = false): boolean {
     if (this.authService.getAuth) {
       if (this.authService.getAuth.LevelUser < 3) {
         this.dialogsService.error("Error Message", "Access denied you level can't access.", this.viewContainerRef)
           .subscribe();
-        return;
+        return false;
       }
     }
     if (this.infoValue) {
@@ -59,10 +59,19 @@ export class PlanMasterComponent extends BaseMasterComponent<PlanMaster,PlanServ
             this.service.calculatorPlanMaster(this.infoValue)
               .subscribe(_result1 => {
                 this.dialogsService.context("System Message", "Save complate", this.viewContainerRef).subscribe();
-              }, (e: any) => this.onLoading = false,() => this.onLoading = false);
+              }, (e: any) => this.onLoading = false, () => this.onLoading = false);
+          } else {
+            if (option) {
+              this.onSaveComplete();
+              if (this.onLoading) {
+                this.onLoading = false;
+              }
+            }
           }
         });
+      return true;
     }
+    return false;
   }
 
 
@@ -84,6 +93,34 @@ export class PlanMasterComponent extends BaseMasterComponent<PlanMaster,PlanServ
       this.onInsertToDataBase(this.displayValue);
     }
   }
+
+  // Overrider on insert data
+  onInsertToDataBase(value: PlanMaster): void {
+    if (this.authService.getAuth) {
+      value["Creator"] = this.authService.getAuth.UserName || "";
+    }
+    // insert data
+    this.service.addModel(value).subscribe(
+      (complete: any) => {
+        if (complete) {
+          this.displayValue = complete;
+          this.infoValue = complete;
+          if (!this.onCalculatorPlanMaster(true)) {
+            this.onSaveComplete();
+          }
+        }
+        if (this.onLoading) {
+          this.onLoading = false;
+        }
+      },
+      (error: any) => {
+        console.error(error);
+        this.dialogsService.error("Failed !",
+          "Save failed with the following error: Invalid Identifier code !!!", this.viewContainerRef);
+      }
+    );
+  }
+
   // on display
   onDetailView(value?: { data: PlanMaster, option: number }): void {
     super.onDetailView(value);

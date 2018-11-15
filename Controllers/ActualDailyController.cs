@@ -104,8 +104,9 @@ namespace VipcoPlanning.Controllers
                             {
                                 WorkShopName = item?.FirstOrDefault()?.WorkShop ?? "-",
                                 WorkGroup = item.Key.GroupName,
-                                ActualMH = (item.Sum(z => z.TotalManHour ?? 0)) + (item.Sum(z => z.TotalManHourOT ?? 0)),
-                                ActualMHxOT = (item.Sum(z => z.TotalManHour ?? 0)) + (item.Sum(z => z.TotalManHourNTOT ?? 0)),
+                                NormalTime = item.Sum(z => z.TotalManHour ?? 0),
+                                OverTime = item.Sum(z => z.TotalManHourOT ?? 0),
+                                OverTimeX = item.Sum(z => z.TotalManHourNTOT ?? 0)
                             });
                         }
 
@@ -114,6 +115,57 @@ namespace VipcoPlanning.Controllers
                         return new JsonResult(new
                         {
                             ActualFabTables = ActualFabTables.OrderBy(x => x.WorkShopName).ThenBy(x => x.WorkGroup),
+                        }, this.DefaultJsonSettings);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
+            return BadRequest(new { Error = Message });
+        }
+
+        // POST: api/ActualDaily/ChartBomManHour
+        [HttpPost("TableActualMonthly")]
+        public async Task<IActionResult> TableActualMonthly([FromBody] OptionChartViewModel Option)
+        {
+            var Message = "";
+            try
+            {
+                if (Option != null && Option.SDate.HasValue && Option.EDate.HasValue)
+                {
+                    var HasData = await this.repository.GetToListAsync(
+                        x => x,
+                        x => x.Daily.Date >= Option.SDate.Value.Date &&
+                             x.Daily.Date <= Option.EDate.Value.Date);
+
+                    if (HasData != null)
+                    {
+
+                        #region TableData
+
+                        var ActualFabTables = new List<ActualFabTable>();
+
+                        foreach (var item in HasData.GroupBy(x => new { x.JobNo, x.GroupCode, x.GroupName }))
+                        {
+                            ActualFabTables.Add(new ActualFabTable
+                            {
+                                JobNo = item.Key.JobNo,
+                                WorkShopName = item?.FirstOrDefault()?.WorkShop ?? "-",
+                                WorkGroup = item.Key.GroupName,
+                                NormalTime = item.Sum(z => z.TotalManHour ?? 0),
+                                OverTime = item.Sum(z => z.TotalManHourOT ?? 0),
+                                OverTimeX = item.Sum(z => z.TotalManHourNTOT ?? 0)
+                            });
+                        }
+
+                        #endregion TableData
+
+                        return new JsonResult(new
+                        {
+                            ActualFabTables = ActualFabTables.OrderBy(x => x.JobNo).ThenBy(x => x.WorkGroup),
                         }, this.DefaultJsonSettings);
                     }
                 }

@@ -10,6 +10,7 @@ namespace VipcoPlanning.ViewModels
         public DateTime? SDate { get; set; }
         public DateTime? EDate { get; set; }
         public int? PlanMasterId { get; set; }
+        public int? BomId { get; set; }
         public string Filter { get; set; }
     }
 }
